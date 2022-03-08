@@ -4,7 +4,9 @@
 <div class="codeBlock">
     <EditForm class="textInput" Model="@codeLines" OnValidSubmit="sendCode">
         <InputTextArea id="code" class="form-control" @bind-Value="codeLines.text"></InputTextArea>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-success" disabled="@disabledSubmit">Start</button>
+        <button type="button" class="btn btn-danger " @onclick="stop" disabled="@disabledStop">@textStop</button>
     </EditForm>
+
 </div>
 

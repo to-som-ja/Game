@@ -14,7 +14,7 @@ namespace Game.Web.Pages
     public class MapBase : ComponentBase, INotifyPropertyChanged
     {
         public List<Block> mapGrid = new List<Block>();
-        protected Player player;
+        public Player player;
         protected int mapWidth = 3000;
         protected int mapHeight = 2000;
         protected int renderWidth = 30;//30
@@ -80,7 +80,7 @@ namespace Game.Web.Pages
                             moveMap = true;
                             renderHeightStart--;
                             renderHeightEnd--;
-                            await Task.Delay(200);
+                            await Task.Delay(100);
                         }
                         else
                         {
@@ -94,7 +94,7 @@ namespace Game.Web.Pages
                             moveMap = true;
                             renderWidthStart++;
                             renderWidthEnd++;
-                            await Task.Delay(200);
+                            await Task.Delay(100);
                         }
                         else
                         {
@@ -108,7 +108,7 @@ namespace Game.Web.Pages
                             moveMap = true;
                             renderHeightStart++;
                             renderHeightEnd++;
-                            await Task.Delay(200);
+                            await Task.Delay(100);
                         }
                         else
                         {
@@ -122,7 +122,7 @@ namespace Game.Web.Pages
                             moveMap = true;
                             renderWidthStart--;
                             renderWidthEnd--;
-                            await Task.Delay(200);
+                            await Task.Delay(100);
 
                         }
                         else
