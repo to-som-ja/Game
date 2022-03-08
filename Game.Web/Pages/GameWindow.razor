@@ -1,0 +1,9 @@
+﻿@page "/"
+@using Game.Web.Pages
+@using Game.Web.Shared
+@using Game.Web.Shared.GameWindow
+
+@inherits GameWindowBase
+
+<Map @ref="map"></Map>
+<CodeBlock @ref="codeBlock" mapBase="@map"></CodeBlock>

@@ -1,0 +1,18 @@
+﻿@using Game.Web.Pages
+@inherits MapBase
+
+<div class="blocks">
+            <img class="player" style="@PlayerCss" src="@player.ImagePath" />
+            @for (int i = renderHeightStart; i < renderHeightEnd; i++)
+            {
+                <div>
+                    @for (int j = renderWidthStart; j < renderWidthEnd; j++)
+                    {<img class="block" src="@mapGrid[i * mapWidth + j].ImagePath" />}
+                </div>
+            }
+        </div>
+
+@code {
+        string PlayerCss => $"top: {top}px; left: {left}px";
+         
+}

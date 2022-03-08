@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Pages\GameWindow.razor~RF2758cde0.TMP" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Accord.Math" Version="3.8.2-alpha" />
+		<PackageReference Include="AVX2PerlinNoise" Version="1.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.2.0-preview3.20168.3" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Game.Models\Game.Models.csproj" />
+  </ItemGroup>
+
+</Project>
