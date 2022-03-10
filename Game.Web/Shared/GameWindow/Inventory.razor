@@ -1,6 +1,28 @@
 ﻿@using Game.Web.Pages
 @inherits InventoryBase
 
-<h3>@player.ImagePath</h3>
+<div class="items">
+    @for (int i = 0; i < 4; i++)
+            {
+                <div>
+                    @for (int j = 0; j < 9; j++)
+                    {<img class="item" src="@showItem(i*9+j)" />}
+                </div>
+            }
+</div>
 
+@code{
+    string showItem(int position)
+    {
+        if (player.Items[position]!=null)
+        {
+            return player.Items[position].ImagePath;
+        }
+        else
+        {
+            return "Images/Items/default.png";
 
+        }
+    }
+
+}

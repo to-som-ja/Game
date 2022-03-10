@@ -35,15 +35,15 @@ namespace Game.Web.Pages
 
         protected override void OnInitialized()
         {
-            rnd = new Random(1);
+            rnd = new Random();
             player = new Player(mapWidth/2, mapHeight/2, "images/player.png");
             player.relativePositionX = renderWidth / 2;
             player.relativePositionY = renderHeight / 2;
             seed = rnd.NextDouble();
             xOffset = rnd.Next(1,10000)-10000;
             yOffset = rnd.Next(1,10000)-10000;
-            top = player.relativePositionY * 40;
-            left = player.relativePositionX * 40;
+            top = player.relativePositionY * 40+3;
+            left = player.relativePositionX * 40+3;
             renderHeightStart = player.positionY - renderHeight / 2;
             renderWidthStart = player.positionX - renderWidth / 2;
             renderHeightEnd = player.positionY + renderHeight / 2;
@@ -175,7 +175,7 @@ namespace Game.Web.Pages
                             break;
                         case 3:
                             type = Type.Water;
-                            path = "images/water.jpg";
+                            path = "images/water.png";
                             break;
                         case 1:
                             type = Type.Forest;
@@ -183,7 +183,7 @@ namespace Game.Web.Pages
                             break;
                         case 2:
                             type = Type.Grass;
-                            path = "images/grass.jpg";
+                            path = "images/grass.png";
                             break;
                     }
                     mapGrid.Add(
