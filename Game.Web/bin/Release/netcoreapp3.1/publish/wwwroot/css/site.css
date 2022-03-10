@@ -1,0 +1,113 @@
+@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+body {
+    
+    background: #005AA7; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to left, #FFFDE4, #005AA7); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #FFFDE4, #005AA7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.blocks {
+    min-width: 1200px;
+    padding: 0;
+    margin: 0;
+    float: left;
+    border-style: solid;
+    border-width: 3px;
+    border-color: #007FFF;
+}
+
+.items {
+    min-width: 360px;
+    padding: 0;
+    margin: 0;
+    float: left;
+    padding-left: 40px;
+    padding-top: 40px;
+}
+
+.block {
+    width: 40px;
+    height: 40px;
+    z-index: 1;
+    border: 1px solid #5bb66e;
+    /*position:absolute;*/
+}
+
+.item {
+    width: 40px;
+    height: 40px;
+    z-index: 1;
+    /*position:absolute;*/
+}
+
+.player {
+    z-index: 2;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+}
+.row{
+    width:100%;
+}
+.codeBlock {
+    height: 600px;
+    width: 360px;
+    float: left;
+    padding-left: 40px;
+    padding-top: 40px;
+}
+
+.textInput {
+    width: 100%;
+    height: 80%;
+    max-height: 600px;
+}
+
+    .textInput textarea {
+        width: 100%;
+        height: 50%;
+        max-height: 550px;
+        min-height: 350px;
+        background-color: #00000036;
+        border-style: solid;
+        border-width: 1px;
+        border-color: #007FFF;
+        font-weight: 600;
+        font-family: 'Open sans', sans-serif;
+    }
+        .textInput textarea:focus {
+            width: 100%;
+            height: 50%;
+            max-height: 550px;
+            min-height: 350px;
+            background-color: #00000020;
+            border-style: solid;
+            border-width: 1px;
+            border-color: #5badff;
+        }
+.btn{
+    padding:7px;
+    margin:10px;
+}
+
+.spinner {
+    border: 16px solid silver;
+    border-top: 16px solid #337AB7;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 700ms linear infinite;
+    top: 40%;
+    left: 55%;
+    position: absolute;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
+}
+}
