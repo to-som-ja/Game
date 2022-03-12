@@ -2,6 +2,7 @@
 using Game.Web.Shared.GameWindow.Commands;
 using Microsoft.AspNetCore.Components;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -17,10 +18,13 @@ namespace Game.Web.Pages
         public bool disabledStop = true;
         public bool stopped = false;
         public string textStop = "Stop";
+        public Stack forLoops;
+        public int line { get; set; }
 
         protected override void OnInitialized ()
         {
             codeLines = new Code();
+            forLoops = new Stack();
         }
         protected async void sendCode()
         {
@@ -36,20 +40,19 @@ namespace Game.Web.Pages
                         case "go":
                             Commands.Add(new Move(mapBase, getDir(line.Split(' ')[1]), int.Parse(line.Split(' ')[2])));
                             break;
+                        case "forloop":
+                            forLoops.Push(new ForLoop(this, Commands.Count-1, int.Parse(line.Split(' ')[1])));
+                            Commands.Add((ICommands)forLoops.Peek());
+                            break;
+                        case "endfor":
+                            Commands.Add((ICommands)forLoops.Pop());
+                            break;
                     }
                 }
             }
-            //if (Commands.Count==0)
-            //{
-            //    Commands.Add(new Move(mapBase, Direction.East, 3));
-            //    Commands.Add(new Move(mapBase, Direction.North, 3));
-            //}
-            // Commnads.Add(new Move(mapBase, Direction.West, 3));
-            //Commnads.Add(new Move(mapBase, Direction.South, 3));
              await execute();
              disabledSubmit = false;
              disabledStop = true;
-            //execute();
         }
         public void stop()
         {
@@ -75,15 +78,17 @@ namespace Game.Web.Pages
         {
             if (Commands.Count!=0)
             {
-                foreach (ICommands command in Commands)
+                while (line < Commands.Count)
                 {
                     if (!stopped)
                     {
-                        await command.execute();
+                        await Commands[line].execute();
                     }
+                    line++;
                 }
             }
             Commands.Clear();
+            line = 0;
             stopped = false;
             textStop = "Stop";
         }
