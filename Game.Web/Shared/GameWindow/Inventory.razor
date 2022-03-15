@@ -14,14 +14,13 @@
 @code{
     string showItem(int position)
     {
-        if (player.Items[position]!=null)
+        if (position<player.Items.Count)
         {
-            return player.Items[position].ImagePath;
+            return player.Items[position].imgPath;
         }
         else
         {
             return "Images/Items/default.png";
-
         }
     }
 

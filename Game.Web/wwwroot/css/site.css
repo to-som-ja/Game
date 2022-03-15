@@ -6,7 +6,6 @@ body {
     background: linear-gradient(to left, #FFFDE4, #005AA7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 .blocks {
-    min-width: 1200px;
     padding: 0;
     margin: 0;
     float: left;
@@ -100,14 +99,36 @@ body {
     left: 55%;
     position: absolute;
 }
+.settings {
 
-@keyframes spin {
-    0% {
-        transform: rotate(0deg)
-    }
+    width: 20%;
+    height:auto;
+    background-color: #646464cf;
+    z-index: 2;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
 
-    100% {
-        transform: rotate(360deg)
+    .settings h1 {
+        text-align: center;
+        margin-top: 5px;
+        font-weight: 600;
+        font-family: 'Open sans', sans-serif;
     }
+    .settings h3 {
+        text-align: center;
+        margin-top: 5px;
+        font-weight: 400;
+        font-family: 'Open sans', sans-serif;
+    }
+.slider {
+    margin: auto;
+    width: 70%;
+    display: flex;
+    justify-content: space-between; /* not center */
+    align-items: center;
 }
-}
+

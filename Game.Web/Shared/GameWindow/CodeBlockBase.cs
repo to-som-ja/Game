@@ -19,9 +19,10 @@ namespace Game.Web.Pages
         public bool stopped = false;
         public string textStop = "Stop";
         public Stack forLoops;
+        public string visible = "hidden";
         public int line { get; set; }
 
-        protected override void OnInitialized ()
+        protected override void OnInitialized()
         {
             codeLines = new Code();
             forLoops = new Stack();
@@ -41,42 +42,48 @@ namespace Game.Web.Pages
                             Commands.Add(new Move(mapBase, getDir(line.Split(' ')[1]), int.Parse(line.Split(' ')[2])));
                             break;
                         case "forloop":
-                            forLoops.Push(new ForLoop(this, Commands.Count-1, int.Parse(line.Split(' ')[1])));
+                            forLoops.Push(new ForLoop(this, Commands.Count - 1, int.Parse(line.Split(' ')[1])));
                             Commands.Add((ICommands)forLoops.Peek());
                             break;
                         case "endfor":
                             Commands.Add((ICommands)forLoops.Pop());
                             break;
+                        case "chop":
+                            Commands.Add(new Chop(mapBase));
+                            break;
+                        case "mine":
+                            Commands.Add(new Mine(mapBase));
+                            break;
                     }
                 }
             }
-             await execute();
-             disabledSubmit = false;
-             disabledStop = true;
+            await execute();
+            disabledSubmit = false;
+            disabledStop = true;
         }
         public void stop()
         {
-            stopped=true;
+            stopped = true;
             textStop = "Stopped";
         }
         public Direction getDir(string stringDir)
         {
             switch (stringDir.ToLower())
             {
-                case "north":
+                case "up":
                     return Direction.North;
-                case "south":
+                case "down":
                     return Direction.South;
-                case "west":
+                case "left":
                     return Direction.West;
-                case "east":
+                case "right":
                     return Direction.East;
             }
-            return  Direction.North;
+            return Direction.North;
         }
         private async Task execute()
         {
-            if (Commands.Count!=0)
+            if (Commands.Count != 0)
             {
                 while (line < Commands.Count)
                 {
@@ -91,6 +98,10 @@ namespace Game.Web.Pages
             line = 0;
             stopped = false;
             textStop = "Stop";
+        }
+        public void showSettings()
+        {
+            visible = "visible";
         }
     }
 }

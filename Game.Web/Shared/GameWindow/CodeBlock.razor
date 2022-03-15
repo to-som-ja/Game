@@ -6,6 +6,7 @@
         <InputTextArea id="code" class="form-control code" @bind-Value="codeLines.text"></InputTextArea>
         <button type="submit" class="btn btn-success" disabled="@disabledSubmit">Start</button>
         <button type="button" class="btn btn-danger " @onclick="stop" disabled="@disabledStop">@textStop</button>
+        <button type="button" class="btn btn-dark " @onclick="showSettings">Settings</button>
     </EditForm>
 
 </div>

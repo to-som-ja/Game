@@ -1,0 +1,25 @@
+﻿@using Game.Web.Pages
+@using System.Collections
+@inherits SettingsBase
+
+<div class="settings" style=" visibility:@codeBlock.visible;" >
+    <h1>Settings</h1>
+    <h3> Width</h3>
+    <div class="slider">
+            <RadzenSlider @bind-Value=@width TValue="int" Min="10" Max="70" Class=" w-100" />
+    </div>
+    <h3>@width</h3>
+    <h3> Height</h3>
+    <div class="slider">
+            <RadzenSlider @bind-Value=@height TValue="int" Min="5" Max="50" Class=" w-100" />
+    </div>
+    <h3>@height</h3>
+    <div class="slider">
+        <button type="button" class="settingssave btn btn-success" @onclick="saveSettings">Save</button>
+        <button type="button" class="settingsexit btn btn-danger " @onclick="exitSettings" >Exit</button>
+    </div>
+</div>
+@code {
+    
+    
+}

@@ -9,6 +9,7 @@ namespace Game.Models
 		Grass,
 		Forest,
 		Water,
-		Rock
+		Rock,
+		ChoppedTrees
 	}
 }

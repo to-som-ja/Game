@@ -19,6 +19,8 @@
 		<PackageReference Include="Accord.Math" Version="3.8.2-alpha" />
 		<PackageReference Include="AVX2PerlinNoise" Version="1.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.2.0-preview3.20168.3" />
+		<PackageReference Include="Radzen.Blazor" Version="3.16.3" />
+		<PackageReference Include="Syncfusion.Blazor" Version="19.4.0.55" />
 	</ItemGroup>
 
   <ItemGroup>

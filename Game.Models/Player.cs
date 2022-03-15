@@ -11,13 +11,15 @@ namespace Game.Models
         public int relativePositionX { get; set; }
         public int relativePositionY { get; set; }
         public string ImagePath { get; set; }
-        public Block[] Items { get; set; }
+        public List<Item> Items { get; set; }
+        public Direction direction { get; set; }
         public Player(int positionX,int positionY,string ImagePath)
         {
             this.positionX = positionX;
             this.positionY = positionY;
             this.ImagePath = ImagePath; 
-            Items = new Block[36];
+            Items = new List<Item>();
+            direction = Direction.South;
         }
     }
 }
