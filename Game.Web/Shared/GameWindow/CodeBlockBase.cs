@@ -10,6 +10,7 @@ namespace Game.Web.Pages
 {
     public class CodeBlockBase : ComponentBase
     {
+        public double stamina =70;
         protected Code codeLines;
         public List<ICommands> Commands = new List<ICommands>();
         [Parameter]
@@ -20,12 +21,51 @@ namespace Game.Web.Pages
         public string textStop = "Stop";
         public Stack forLoops;
         public string visible = "hidden";
+        public string consoleColor;
         public int line { get; set; }
-
+        protected string line1;
+        protected string line2;
+        protected string line3;
+        protected string line4;
+        protected string line1Color;
+        protected string line2Color;
+        protected string line3Color;
+        protected string line4Color;
         protected override void OnInitialized()
         {
             codeLines = new Code();
             forLoops = new Stack();
+            Stamina();
+        }
+        protected async override void OnParametersSet()
+        {
+            
+        }
+        public async Task Stamina()
+        {
+            while (true)
+            {
+                if (stamina < 100)
+                {
+                    stamina++;
+                    await Task.Delay(400);
+                }
+                else
+                {
+                    await Task.Delay(1000);
+                }
+            }       
+        }
+        public async Task AddStamina(int time)
+        {
+            for (int i = 0; i < time * 20; i++)
+            {
+                if (stamina < 100)
+                {
+                    stamina++;
+                    await Task.Delay(50);
+                }
+            }
         }
         protected async void sendCode()
         {
@@ -39,7 +79,7 @@ namespace Game.Web.Pages
                     switch (command.ToLower())
                     {
                         case "go":
-                            Commands.Add(new Move(mapBase, getDir(line.Split(' ')[1]), int.Parse(line.Split(' ')[2])));
+                            Commands.Add(new Move(this,mapBase, getDir(line.Split(' ')[1]), int.Parse(line.Split(' ')[2])));
                             break;
                         case "forloop":
                             forLoops.Push(new ForLoop(this, Commands.Count - 1, int.Parse(line.Split(' ')[1])));
@@ -49,15 +89,27 @@ namespace Game.Web.Pages
                             Commands.Add((ICommands)forLoops.Pop());
                             break;
                         case "chop":
-                            Commands.Add(new Chop(mapBase));
+                            Commands.Add(new Chop(this,mapBase));
                             break;
                         case "mine":
-                            Commands.Add(new Mine(mapBase));
+                            Commands.Add(new Mine(this,mapBase));
+                            break;
+                        case "sleep":
+                            Commands.Add(new Sleep(this, int.Parse(line.Split(' ')[1])));
                             break;
                     }
                 }
             }
-            await execute();
+            if(forLoops.Count != 0)
+            {
+                addTextToConsole("Missing endfor", "red");
+                Commands.Clear();
+                forLoops.Clear();
+            }
+            else
+            {
+                await execute();
+            }           
             disabledSubmit = false;
             disabledStop = true;
         }
@@ -65,6 +117,7 @@ namespace Game.Web.Pages
         {
             stopped = true;
             textStop = "Stopped";
+            addTextToConsole("Stopped", "black");
         }
         public Direction getDir(string stringDir)
         {
@@ -95,13 +148,27 @@ namespace Game.Web.Pages
                 }
             }
             Commands.Clear();
+            consoleColor = "green";
+            addTextToConsole("complete","green");
             line = 0;
             stopped = false;
             textStop = "Stop";
         }
         public void showSettings()
-        {
+        {   
+
             visible = "visible";
+        }
+        public void addTextToConsole(string text,string color) 
+        {
+            line4 = line3;
+            line4Color = line3Color;
+            line3 = line2;
+            line3Color = line2Color;
+            line2 = line1;
+            line2Color = line1Color;
+            line1 = text;
+            line1Color = color;
         }
     }
 }

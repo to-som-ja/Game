@@ -7,10 +7,12 @@ namespace Game.Web.Shared.GameWindow.Commands
     public class Chop : ICommands
     {
         public MapBase map;
-
-        public Chop(MapBase map)
+        public CodeBlockBase codeBlock;
+        int staminaUse = 20;
+        public Chop(CodeBlockBase codeBlock, MapBase map)
         {
             this.map = map;
+            this.codeBlock = codeBlock;
         }
         public async Task execute()
         {
@@ -35,14 +37,24 @@ namespace Game.Web.Shared.GameWindow.Commands
             }
             if (block != null && block.Type == Type.Forest)
             {
-                await Task.Delay(200);
-                block.ImagePath = "Images/choppedTrees.png";
-                block.Type = Type.ChoppedTrees;
-
-                if (map.player.Items.Count<36)
+                if(codeBlock.stamina >= staminaUse)
                 {
-                    map.player.Items.Add(new Item("wood", "Images/Items/item-wood.png"));
+                    await Task.Delay(200);
+                    block.ImagePath = "Images/choppedTrees.png";
+                    block.Type = Type.ChoppedTrees;
+                    codeBlock.stamina -= staminaUse;
+                    if (map.player.Items.Count < 36)
+                    {
+                        map.player.Items.Add(new Item("wood", "Images/Items/item-wood.png"));
+                    }
+                }else
+                {
+                    codeBlock.addTextToConsole("No stamina for chopping", "red");
                 }
+            }
+            else
+            {
+                codeBlock.addTextToConsole("Error chop", "red");
             }
             map.refresh();
             

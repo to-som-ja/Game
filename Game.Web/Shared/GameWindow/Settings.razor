@@ -15,8 +15,8 @@
     </div>
     <h3>@height</h3>
     <div class="slider">
-        <button type="button" class="settingssave btn btn-success" @onclick="saveSettings">Save</button>
-        <button type="button" class="settingsexit btn btn-danger " @onclick="exitSettings" >Exit</button>
+        <button type="button" class="settingsbtn btn btn-success" disabled="@codeBlock.disabledSubmit" @onclick="saveSettings">Save</button>
+        <button type="button" class="settingsbtn btn btn-danger " @onclick="exitSettings" >Exit</button>
     </div>
 </div>
 @code {

@@ -26,6 +26,8 @@ namespace Game.Web.Shared.GameWindow
         }
         public void exitSettings()
         {
+            width = map.renderWidthEnd - map.renderWidthStart;
+            height = map.renderHeightEnd - map.renderHeightStart;
             codeBlock.visible = "hidden";
         }
         public void saveSettings()
@@ -52,7 +54,8 @@ namespace Game.Web.Shared.GameWindow
 
             map.left = 3 + 40 * (map.player.positionX - map.renderWidthStart);
             map.top = 3 + 40 * (map.player.positionY - map.renderHeightStart);
-
+            map.renderHeight = height;
+            map.renderWidth = width;
 
             map.refresh();
             codeBlock.visible = "hidden";

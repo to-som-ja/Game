@@ -17,8 +17,8 @@ namespace Game.Web.Pages
         public Player player;
         protected int mapWidth = 3000;
         protected int mapHeight = 2000;
-        protected int renderWidth = 30;//30
-        protected int renderHeight = 20;//20
+        public int renderWidth = 30;//30
+        public int renderHeight = 20;//20
         public int renderWidthStart;
         public int renderWidthEnd;
         public int renderHeightStart;
@@ -61,7 +61,7 @@ namespace Game.Web.Pages
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
-        private bool canMove(int dir)
+        public bool canMove(int dir)
         {
             Block block;
             bool canWalkOnBlock= false;
@@ -102,7 +102,7 @@ namespace Game.Web.Pages
                     case 0:
                         player.direction = Direction.North;
                         player.positionY--;
-                        if (player.relativePositionY - 1 < border)
+                        if (top - 40 < border*40+3)
                         {
                             moveMap = true;
                             renderHeightStart--;
@@ -117,7 +117,7 @@ namespace Game.Web.Pages
                     case 1:
                         player.positionX++;
                         player.direction = Direction.East;
-                        if (player.relativePositionX + 1 >= renderWidth - border)
+                        if (left + 40 >= renderWidth*40-border*40)
                         {
                             moveMap = true;
                             renderWidthStart++;
@@ -132,7 +132,7 @@ namespace Game.Web.Pages
                     case 2:
                         player.positionY++;
                         player.direction = Direction.South;
-                        if (player.relativePositionY + 1 >= renderHeight - border)
+                        if (top + 40 >= renderHeight*40 - border*40)
                         {
                             moveMap = true;
                             renderHeightStart++;
@@ -147,7 +147,7 @@ namespace Game.Web.Pages
                     case 3:
                         player.positionX--;
                         player.direction = Direction.West;
-                        if (player.relativePositionX - 1 < border)
+                        if (left -40 < border*40+3)
                         {
                             moveMap = true;
                             renderWidthStart--;

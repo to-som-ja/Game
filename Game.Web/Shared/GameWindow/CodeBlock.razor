@@ -1,4 +1,6 @@
 ﻿@using Game.Web.Pages
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.ProgressBar
 @inherits CodeBlockBase
 
 <div class="codeBlock">
@@ -6,8 +8,15 @@
         <InputTextArea id="code" class="form-control code" @bind-Value="codeLines.text"></InputTextArea>
         <button type="submit" class="btn btn-success" disabled="@disabledSubmit">Start</button>
         <button type="button" class="btn btn-danger " @onclick="stop" disabled="@disabledStop">@textStop</button>
-        <button type="button" class="btn btn-dark " @onclick="showSettings">Settings</button>
+        <button type="button" class="btn btn-dark " disabled="@disabledSubmit" @onclick="showSettings">Settings</button>
+         <RadzenProgressBar @bind-Value="@stamina"></RadzenProgressBar>
+        <div  class="console">
+            <p style="color:@line1Color">@line1</p>
+            <p style="color:@line2Color">@line2</p>
+            <p style="color:@line3Color">@line3</p>
+            <p style="color:@line4Color">@line4</p>
+        </div>
+       
     </EditForm>
-
 </div>
 

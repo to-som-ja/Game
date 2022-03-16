@@ -7,10 +7,12 @@ namespace Game.Web.Shared.GameWindow.Commands
     public class Mine : ICommands
     {
         public MapBase map;
-
-        public Mine(MapBase map)
+        public CodeBlockBase codeBlock;
+        int staminaUse = 15;
+        public Mine(CodeBlockBase codeBlock, MapBase map)
         {
             this.map = map;
+            this.codeBlock = codeBlock;
         }
         public async Task execute()
         {
@@ -35,14 +37,25 @@ namespace Game.Web.Shared.GameWindow.Commands
             }
             if (block != null && block.Type == Type.Rock)
             {
-                await Task.Delay(500);
-                block.ImagePath = "Images/grass.png";
-                block.Type = Type.Grass;
-
-                if (map.player.Items.Count < 36)
+                if (codeBlock.stamina > staminaUse)
                 {
-                    map.player.Items.Add(new Item("rock", "Images/Items/item-rocks.png"));
+                    await Task.Delay(500);
+                    block.ImagePath = "Images/grass.png";
+                    block.Type = Type.Grass;
+                    codeBlock.stamina -= staminaUse;
+                    if (map.player.Items.Count < 36)
+                    {
+                        map.player.Items.Add(new Item("rock", "Images/Items/item-rocks.png"));
+                    }
                 }
+                else
+                {
+                    codeBlock.addTextToConsole("No stamina for mining", "red");
+                }
+            }
+            else
+            {
+                codeBlock.addTextToConsole("Error mine", "red");
             }
             map.refresh();
 
