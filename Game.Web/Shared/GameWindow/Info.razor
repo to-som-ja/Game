@@ -1,0 +1,14 @@
+﻿@using Game.Web.Pages
+@using System.Collections
+@inherits InfoBase
+<div class="settings" style=" visibility:@codeBlock.visibleInfo;" >
+    <h1 >INFO</h1>
+    <div class="info">       
+    @for (int i = 0; i < CommandsNameList.Count; i++)
+            {
+                <h3 class="commandName">@CommandsNameList[i]</h3>
+                <p>@CommandsInfoList[i]</p>
+            }
+    </div>  
+      <button type="button" class="infobtn btn btn-danger " @onclick="exitInfo" >Exit</button>
+</div>

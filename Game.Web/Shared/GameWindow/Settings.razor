@@ -2,7 +2,7 @@
 @using System.Collections
 @inherits SettingsBase
 
-<div class="settings" style=" visibility:@codeBlock.visible;" >
+<div class="settings" style=" visibility:@codeBlock.visibleSettings;" >
     <h1>Settings</h1>
     <h3> Width</h3>
     <div class="slider">
@@ -15,7 +15,7 @@
     </div>
     <h3>@height</h3>
     <div class="slider">
-        <button type="button" class="settingsbtn btn btn-success" disabled="@codeBlock.disabledSubmit" @onclick="saveSettings">Save</button>
+        <button type="button" class="settingsbtn btn btn-success" @onclick="saveSettings">Save</button>
         <button type="button" class="settingsbtn btn btn-danger " @onclick="exitSettings" >Exit</button>
     </div>
 </div>

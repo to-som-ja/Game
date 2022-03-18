@@ -9,6 +9,7 @@
         <button type="submit" class="btn btn-success" disabled="@disabledSubmit">Start</button>
         <button type="button" class="btn btn-danger " @onclick="stop" disabled="@disabledStop">@textStop</button>
         <button type="button" class="btn btn-dark " disabled="@disabledSubmit" @onclick="showSettings">Settings</button>
+        <button type="button" class="btn btn-warning " disabled="@disabledSubmit" @onclick="showInfo">Info</button>
          <RadzenProgressBar @bind-Value="@stamina"></RadzenProgressBar>
         <div  class="console">
             <p style="color:@line1Color">@line1</p>
@@ -19,4 +20,3 @@
        
     </EditForm>
 </div>
-

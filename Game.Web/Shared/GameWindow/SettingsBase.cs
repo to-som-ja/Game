@@ -28,7 +28,8 @@ namespace Game.Web.Shared.GameWindow
         {
             width = map.renderWidthEnd - map.renderWidthStart;
             height = map.renderHeightEnd - map.renderHeightStart;
-            codeBlock.visible = "hidden";
+            codeBlock.visibleSettings = "hidden";
+            codeBlock.disabledSubmit = false;
         }
         public void saveSettings()
         {
@@ -58,7 +59,8 @@ namespace Game.Web.Shared.GameWindow
             map.renderWidth = width;
 
             map.refresh();
-            codeBlock.visible = "hidden";
+            codeBlock.visibleSettings = "hidden";
+            codeBlock.disabledSubmit = false;
         }
     }
 }

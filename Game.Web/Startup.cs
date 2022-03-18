@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Radzen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,10 @@ namespace Game.Web
 			services.AddRazorPages();
 			services.AddServerSideBlazor();
 			services.AddTransient<MapBase>();
+			services.AddScoped<DialogService>();
+			services.AddScoped<NotificationService>();
+			services.AddScoped<TooltipService>();
+			services.AddScoped<ContextMenuService>();
 			//services.AddHttpClient<IEmployeeService, EmployeeService>(client =>
 			//{
 			//	client.BaseAddress = new Uri("https://localhost:44358/");

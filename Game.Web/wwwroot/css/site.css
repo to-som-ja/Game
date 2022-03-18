@@ -142,6 +142,30 @@ body {
     border: 2px solid #007FFF;
     border-radius: 5px;
 }
-.console p{
-    margin:0;
+    .console p {
+        margin: 0;
+        font-family: 'Open sans', sans-serif;
+    }
+.infobtn {
+    text-align: center;
+    display: flex;
+    justify-content: space-between; /* not center */
+    align-items: center;
+    margin: auto;
+}
+.settings p {
+    text-align: center;
+}
+.btn{
+    margin:5px;
+}
+.rz-progressbar{
+    margin:5px 0 5px 0;
+}
+.commandName{
+    margin-bottom:0;
+}
+.info {
+    max-height:500px;
+    overflow-y: scroll
 }

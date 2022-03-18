@@ -10,18 +10,22 @@ namespace Game.Web.Pages
 {
     public class CodeBlockBase : ComponentBase
     {
-        public double stamina =70;
-        protected Code codeLines;
-        public List<ICommands> Commands = new List<ICommands>();
         [Parameter]
         public MapBase mapBase { get; set; }
+        public double stamina =70;
+
+        public List<ICommands> Commands = new List<ICommands>();
+        protected Code codeLines;
+        public Stack forLoops;
+        //public List<Dictionary<int,string>> integers;
+        public Dictionary<string, int> integers;
+        public string visibleSettings = "hidden";
+        public string visibleInfo = "hidden";
+        public string consoleColor;
         public bool disabledSubmit = false;
         public bool disabledStop = true;
         public bool stopped = false;
         public string textStop = "Stop";
-        public Stack forLoops;
-        public string visible = "hidden";
-        public string consoleColor;
         public int line { get; set; }
         protected string line1;
         protected string line2;
@@ -31,10 +35,12 @@ namespace Game.Web.Pages
         protected string line2Color;
         protected string line3Color;
         protected string line4Color;
+
         protected override void OnInitialized()
         {
             codeLines = new Code();
             forLoops = new Stack();
+            integers = new Dictionary<string, int>();
             Stamina();
         }
         protected async override void OnParametersSet()
@@ -79,7 +85,7 @@ namespace Game.Web.Pages
                     switch (command.ToLower())
                     {
                         case "go":
-                            Commands.Add(new Move(this,mapBase, getDir(line.Split(' ')[1]), int.Parse(line.Split(' ')[2])));
+                            Commands.Add(new Move(this,mapBase, getDir(line.Split(' ')[1]), line.Split(' ')[2]));
                             break;
                         case "forloop":
                             forLoops.Push(new ForLoop(this, Commands.Count - 1, int.Parse(line.Split(' ')[1])));
@@ -97,6 +103,18 @@ namespace Game.Web.Pages
                         case "sleep":
                             Commands.Add(new Sleep(this, int.Parse(line.Split(' ')[1])));
                             break;
+                        case "int":
+                            integers.Add(line.Split(' ')[1], int.Parse(line.Split(' ')[2]));
+                            break;
+                        case "inc":
+                            Commands.Add(new Int(this, true,line.Split(' ')[1]));
+                            break;
+                        case "dec":
+                            Commands.Add(new Int(this, false, line.Split(' ')[1]));
+                            break;
+                        case "set":
+                            Commands.Add(new Set(this, line.Split(' ')[1], int.Parse(line.Split(' ')[2])));
+                            break;
                     }
                 }
             }
@@ -105,6 +123,7 @@ namespace Game.Web.Pages
                 addTextToConsole("Missing endfor", "red");
                 Commands.Clear();
                 forLoops.Clear();
+                integers.Clear();
             }
             else
             {
@@ -148,6 +167,7 @@ namespace Game.Web.Pages
                 }
             }
             Commands.Clear();
+            integers.Clear();
             consoleColor = "green";
             addTextToConsole("complete","green");
             line = 0;
@@ -156,8 +176,13 @@ namespace Game.Web.Pages
         }
         public void showSettings()
         {   
-
-            visible = "visible";
+            visibleSettings = "visible";
+            disabledSubmit = true;
+        }
+        public void showInfo()
+        {
+            visibleInfo = "visible"; 
+            disabledSubmit = true;
         }
         public void addTextToConsole(string text,string color) 
         {
