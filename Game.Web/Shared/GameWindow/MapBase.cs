@@ -36,7 +36,7 @@ namespace Game.Web.Pages
         protected override void OnInitialized()
         {
             rnd = new Random(2);
-            player = new Player(mapWidth / 2, mapHeight / 2, "images/player.png");
+            player = new Player(mapWidth / 2, mapHeight / 2, "Images/Enemies/enemy-Fiddle.png");
             player.relativePositionX = renderWidth / 2;
             player.relativePositionY = renderHeight / 2;
             seed = rnd.NextDouble();

@@ -88,7 +88,13 @@ namespace Game.Web.Pages
                             Commands.Add(new Move(this,mapBase, getDir(line.Split(' ')[1]), line.Split(' ')[2]));
                             break;
                         case "forloop":
-                            forLoops.Push(new ForLoop(this, Commands.Count - 1, int.Parse(line.Split(' ')[1])));
+                            int count;
+                            string s = line.Split(' ')[1];
+                            if (!Int32.TryParse(s, out count))
+                            {
+                                count = integers[s];
+                            }
+                            forLoops.Push(new ForLoop(this, Commands.Count - 1, count));
                             Commands.Add((ICommands)forLoops.Peek());
                             break;
                         case "endfor":
