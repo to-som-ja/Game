@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Game.Web.Shared.GameWindow
 {
@@ -17,17 +19,25 @@ namespace Game.Web.Shared.GameWindow
         protected string visible = "hidden";
         public event PropertyChangedEventHandler PropertyChanged;
         protected IDictionary<string, object> data = new Dictionary<string, object>();
+        public bool waiting =false;
+        protected IEnemy enemy;
         protected override void OnInitialized()
         {
-            appState.Action = click;
+            appState.Action = refresh;
             appState.ActionWithParameters = clickWithParameters;
             PropertyChanged += (o, e) => StateHasChanged();
             StateHasChanged();
         }
-        private void click()
+        private void refresh()
         {
-            text = "text";
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+            // PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+            visible = "hidden";
+            if (((EnemyParent)enemy).hp <= 0)
+            {
+                codeBlock.mapBase.enemies.Remove(enemy);
+                codeBlock.mapBase.refresh();
+            }
+            waiting = false;
         }
         private void clickWithParameters(Dictionary<string, object> dictionaryParameters)
         {
@@ -37,11 +47,15 @@ namespace Game.Web.Shared.GameWindow
             }          
         }
         public void combat(IEnemy enemy)
-        {
+        {   
+            this.enemy = enemy;
+            waiting = true;
+            data.Clear();
             visible = "visible";
-            data.Add("veigar", enemy);
+            data.Add("veigar", enemy);           
             type = enemy.ComponentType();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+            codeBlock.mapBase.refresh();
         }
     }
 }

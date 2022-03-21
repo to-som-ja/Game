@@ -1,11 +1,10 @@
 ﻿@using Game.Web.Pages
 @using System.Collections
 @inherits CombatBase
-<div class="settings" style="visibility:@visible" >
+<div class="combat" style="visibility:@visible" >
    
     <h1 >Combat</h1>
     <CascadingValue Value="appState">
         <DynamicComponent Type="type"  Parameters="data"></DynamicComponent>
     </CascadingValue>
-   <p>@text</p>
 </div>

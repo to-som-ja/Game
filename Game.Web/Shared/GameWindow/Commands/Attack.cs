@@ -36,12 +36,12 @@ namespace Game.Web.Shared.GameWindow.Commands
                     break;
             }
             bool somethingToAttack = false;
-            if (block != null && block.Type == Type.Grass|| block.Type == Type.ChoppedTrees)
+            if (block != null && block.Type == Type.Grass || block.Type == Type.ChoppedTrees)
             {
                 foreach (EnemyParent enemy in map.enemies)
                 {
-                    if (enemy.positionX==block.positionX && enemy.positionY == block.positionY)
-                    {   
+                    if (enemy.positionX == block.positionX && enemy.positionY == block.positionY)
+                    {
                         somethingToAttack = true;
                         codeBlock.combat.combat((IEnemy)enemy);
                     }
@@ -51,6 +51,9 @@ namespace Game.Web.Shared.GameWindow.Commands
             {
                 codeBlock.addTextToConsole("Nothing to attack", "red");
             }
+
+
+            //codeBlock.combat.combat(map.enemies[0]);            
         }
     }
 }

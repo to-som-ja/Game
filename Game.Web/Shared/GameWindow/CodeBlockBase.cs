@@ -16,7 +16,7 @@ namespace Game.Web.Pages
         [Parameter]
         public CombatBase combat { get; set; }
 
-        public double stamina =70;
+        public double stamina =20;
 
         public List<ICommands> Commands = new List<ICommands>();
         protected Code codeLines;
@@ -66,6 +66,11 @@ namespace Game.Web.Pages
                 }
             }       
         }
+        public async Task Wait(int time)
+        {
+            await Task.Delay(time);
+        }
+        
         public async Task AddStamina(int time)
         {
             for (int i = 0; i < time * 20; i++)
@@ -127,6 +132,7 @@ namespace Game.Web.Pages
                             break;
                         case "attack":
                             Commands.Add(new Attack(this,mapBase));
+                            Commands.Add(new Wait(this, mapBase));
                             break;
                         case "look":
                             Commands.Add(new Look(this, mapBase, getDir(line.Split(' ')[1])));

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System;
+using Game.Web.Shared.GameWindow.Enemies.Components;
+
 
 namespace Game.Web.Shared.GameWindow.Enemies
 {

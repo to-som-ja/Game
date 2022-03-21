@@ -1,0 +1,80 @@
+﻿@using Game.Web.Pages
+@using System.Threading
+@using System.Diagnostics
+
+<h3>@veigar.name @veigar.level </h3>
+<h5>Kill monster under @veigar.maxTime seconds</h5>
+<div class="hpBar">
+    <div class="hpBarLeft" style="@styleHPString"></div>
+</div>
+<div class="buttonsDiv">
+    <button @onclick="click" class="btn btn-light">ATTACK</button>
+    <button @onclick="exit" class="btn btn-danger">EXIT</button>
+</div>
+<p>TIME: @Math.Round(seconds, 2)</p>
+<h3>@failed</h3>
+
+@code {
+    [CascadingParameter]
+    public AppState appState { get; set; }
+    [Parameter]
+    public EnemyVeigar veigar { get; set; }
+    public string styleHPString = "width: 100%";
+    public string failed = "";
+    public int full = 0;
+    double seconds = 0;
+    bool dead = false;
+    Stopwatch stopWatch = new Stopwatch();
+    Dictionary<string, object> dictionary = new Dictionary<string, object>();
+
+    protected void exit()
+    {
+
+        styleHPString = "width: 100%";
+        if (failed == "FAILED")
+        {
+             veigar.hp = full;
+        }
+        failed = "";
+        seconds = 0;
+        dead = false;
+        stopWatch.Reset();
+        appState.Action?.Invoke();
+        veigar.hp = full;
+        full = 0;
+        // appState.ActionWithParameters?.Invoke(dictionary);
+    }
+    protected void click()
+    {
+        if (!dead)
+        {
+            if (full == 0)
+            {
+                full = veigar.hp;
+            }
+            stopWatch.Stop();
+            TimeSpan ts = stopWatch.Elapsed;
+            seconds = ts.TotalSeconds;
+            int dmg = 5;
+            veigar.hp -= dmg;
+            int hpBar = veigar.hp * 100 / full;
+            styleHPString = $"width: {hpBar}%";
+            if (veigar.hp <= 0)
+            {
+                if (seconds < veigar.maxTime)
+                {
+                    dead = true;
+                    failed = "Succesfull";
+                }
+                else
+                {
+                    failed = "FAILED";
+                }
+            }
+            else
+            {
+                stopWatch.Start();
+            }
+        }
+    }
+}

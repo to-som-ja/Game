@@ -39,14 +39,14 @@ namespace Game.Web.Pages
         protected override void OnInitialized()
         {
             rnd = new Random();
-            player = new Player(mapWidth / 2, mapHeight / 2, "Images/Enemies/enemy-Fiddle.png");
+            player = new Player(mapWidth / 2, mapHeight / 2, "Images/player.png");
             player.relativePositionX = renderWidth / 2;
             player.relativePositionY = renderHeight / 2;
             seed = rnd.NextDouble();
             xOffset = rnd.Next(1, 10000) - 10000;
             yOffset = rnd.Next(1, 10000) - 10000;
             top = player.relativePositionY * 40 + 3;
-            left = player.relativePositionX * 40 + 3;          
+            left = player.relativePositionX * 40 + 3;
             generateMap();
             while (mapGrid[mapFunction(player.positionX, player.positionY)].Type != Type.Grass)
             {
@@ -57,9 +57,9 @@ namespace Game.Web.Pages
             renderHeightEnd = player.positionY + renderHeight / 2;
             renderWidthEnd = player.positionX + renderWidth / 2;
             for (int i = renderHeightStart; i < renderHeightEnd; i++)
-            {   
-                if(i!=player.positionY)
-                spawnEnemy(false, i);
+            {
+                if (i != player.positionY)
+                    spawnEnemy(false, i);
             }
             PropertyChanged += (o, e) => StateHasChanged();
             StateHasChanged();
@@ -116,7 +116,7 @@ namespace Game.Web.Pages
                         player.positionY--;
                         if (top - 40 < border * 40 + 3)
                         {
-                            moveMap = true;                          
+                            moveMap = true;
                             renderHeightStart--;
                             renderHeightEnd--;
                             despawnEnemy(false, renderHeightEnd);
@@ -245,7 +245,7 @@ namespace Game.Web.Pages
                                 ImagePath = path
                             });
                 }
-            }           
+            }
         }
 
         public int getPerlinNoise(int x, int y)
@@ -269,21 +269,21 @@ namespace Game.Web.Pages
 
         public void spawnEnemy(bool row, int position)
         {
-            
+
 
             if (rnd.Next(0, 100) < spawnRate)
             {
-                int positionY=0;
-                int positionX=0;
+                int positionY = 0;
+                int positionX = 0;
                 Block block;
                 List<Block> candidatesForSpawn = new List<Block>();
 
                 if (row)
-                {   
+                {
                     for (int i = renderHeightStart; i < renderHeightEnd; i++)
                     {
                         block = mapGrid[mapFunction(position, i)];
-                        if (block.Type==Type.Grass || block.Type==Type.ChoppedTrees)
+                        if (block.Type == Type.Grass || block.Type == Type.ChoppedTrees)
                         {
                             candidatesForSpawn.Add(block);
                         }
@@ -304,15 +304,33 @@ namespace Game.Web.Pages
                     }
                     positionY = position;
                     int random = rnd.Next(0, candidatesForSpawn.Count);
-                    if(candidatesForSpawn.Count>random)
-                    positionX = candidatesForSpawn[random].positionX;
+                    if (candidatesForSpawn.Count > random)
+                        positionX = candidatesForSpawn[random].positionX;
                 }
                 int level = (int)Math.Sqrt(Math.Abs(mapWidth / 2 - positionX) + Math.Abs(mapHeight / 2 - positionY));
-                EnemyParent enemy = new EnemyVeigar(positionX, positionY, level);
+                EnemyParent enemy = null;
+                switch (rnd.Next(0, 5))
+                {
+                    case 0:
+                        enemy = new EnemyVeigar(positionX, positionY, level);
+                        break;
+                    case 1:
+                        enemy = new EnemyMorde(positionX, positionY, level);
+                        break;
+                    case 2:
+                        enemy = new EnemyFiddle(positionX, positionY, level);
+                        break;
+                    case 3:
+                        enemy = new EnemyBrand(positionX, positionY, level);
+                        break;
+                    case 4:
+                        enemy = new EnemyChogath(positionX, positionY, level);
+                        break;
+                }
                 if (candidatesForSpawn.Count != 0)
                 {
                     enemies.Add((IEnemy)enemy);
-                }              
+                }
             }
         }
         public void despawnEnemy(bool row, int position)
@@ -345,7 +363,7 @@ namespace Game.Web.Pages
             }
         }
         public void chechEnemies()
-        {                           
+        {
             Stack<int> removeEnemies = new Stack<int>();
             for (int i = 0; i < enemies.Count; i++)
             {
@@ -355,7 +373,7 @@ namespace Game.Web.Pages
                     removeEnemies.Push(i);
                 }
             }
-            foreach(int index in removeEnemies)
+            foreach (int index in removeEnemies)
             {
                 enemies.RemoveAt(index);
             }
