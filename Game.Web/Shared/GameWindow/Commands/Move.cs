@@ -28,7 +28,6 @@ namespace Game.Web.Shared.GameWindow.Commands
             {
                 distance = codeBlock.integers[textDistance];
             }
-            bool cantMove = false;
             bool noStamina = false;
             int dir = 0;
             switch (direction)
@@ -46,30 +45,27 @@ namespace Game.Web.Shared.GameWindow.Commands
                     dir = 3;
                     break;
             }
-            for (int i = 0; i < distance; i++)
+            if (map.canMove(dir))
             {
-                if (map.canMove(dir))
+                for (int i = 0; i < distance; i++)
                 {
                     if (codeBlock.stamina >= staminaUse)
                     {
-                        codeBlock.stamina -= staminaUse;
-                        await map.moveTo(dir);
+                        if (!codeBlock.stopped)
+                        {
+                            codeBlock.stamina -= staminaUse;
+                            await map.moveTo(dir);
+                        }                       
                     }
                     else
                     {
                         noStamina = true;
                     }
                 }
-                else
-                {
-                    cantMove = true;
-                }
-
             }
-            if (cantMove)
+            else
             {
                 codeBlock.addTextToConsole("Cant go there", "red");
-
             }
             if (noStamina)
             {

@@ -70,7 +70,7 @@ namespace Game.Web.Pages
         {
             for (int i = 0; i < time * 20; i++)
             {
-                if (stamina < 100)
+                if (stamina < 100 && !stopped)
                 {
                     stamina++;
                     await Task.Delay(50);
@@ -127,6 +127,9 @@ namespace Game.Web.Pages
                             break;
                         case "attack":
                             Commands.Add(new Attack(this,mapBase));
+                            break;
+                        case "look":
+                            Commands.Add(new Look(this, mapBase, getDir(line.Split(' ')[1])));
                             break;
                     }
                 }

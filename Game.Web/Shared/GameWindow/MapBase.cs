@@ -33,10 +33,12 @@ namespace Game.Web.Pages
         public int yOffset; //v- +^
         public event PropertyChangedEventHandler PropertyChanged;
         public List<IEnemy> enemies = new List<IEnemy>();
+        public int spawnRate = 50;
+
 
         protected override void OnInitialized()
         {
-            rnd = new Random(2);
+            rnd = new Random();
             player = new Player(mapWidth / 2, mapHeight / 2, "Images/Enemies/enemy-Fiddle.png");
             player.relativePositionX = renderWidth / 2;
             player.relativePositionY = renderHeight / 2;
@@ -44,12 +46,21 @@ namespace Game.Web.Pages
             xOffset = rnd.Next(1, 10000) - 10000;
             yOffset = rnd.Next(1, 10000) - 10000;
             top = player.relativePositionY * 40 + 3;
-            left = player.relativePositionX * 40 + 3;
+            left = player.relativePositionX * 40 + 3;          
+            generateMap();
+            while (mapGrid[mapFunction(player.positionX, player.positionY)].Type != Type.Grass)
+            {
+                player.positionX++;
+            }
             renderHeightStart = player.positionY - renderHeight / 2;
             renderWidthStart = player.positionX - renderWidth / 2;
             renderHeightEnd = player.positionY + renderHeight / 2;
             renderWidthEnd = player.positionX + renderWidth / 2;
-            generateMap();
+            for (int i = renderHeightStart; i < renderHeightEnd; i++)
+            {   
+                if(i!=player.positionY)
+                spawnEnemy(false, i);
+            }
             PropertyChanged += (o, e) => StateHasChanged();
             StateHasChanged();
 
@@ -234,7 +245,7 @@ namespace Game.Web.Pages
                                 ImagePath = path
                             });
                 }
-            }
+            }           
         }
 
         public int getPerlinNoise(int x, int y)
@@ -258,21 +269,51 @@ namespace Game.Web.Pages
 
         public void spawnEnemy(bool row, int position)
         {
-            int positionY;
-            int positionX;
-            if (row)
+            
+
+            if (rnd.Next(0, 100) < spawnRate)
             {
-                positionX = position;
-                positionY = player.positionY;//TODO
+                int positionY=0;
+                int positionX=0;
+                Block block;
+                List<Block> candidatesForSpawn = new List<Block>();
+
+                if (row)
+                {   
+                    for (int i = renderHeightStart; i < renderHeightEnd; i++)
+                    {
+                        block = mapGrid[mapFunction(position, i)];
+                        if (block.Type==Type.Grass || block.Type==Type.ChoppedTrees)
+                        {
+                            candidatesForSpawn.Add(block);
+                        }
+                    }
+
+                    positionX = position;
+                    positionY = candidatesForSpawn[rnd.Next(0, candidatesForSpawn.Count)].positionY;
+                }
+                else
+                {
+                    for (int i = renderWidthStart; i < renderWidthEnd; i++)
+                    {
+                        block = mapGrid[mapFunction(i, position)];
+                        if (block.Type == Type.Grass || block.Type == Type.ChoppedTrees)
+                        {
+                            candidatesForSpawn.Add(block);
+                        }
+                    }
+                    positionY = position;
+                    int random = rnd.Next(0, candidatesForSpawn.Count);
+                    if(candidatesForSpawn.Count>random)
+                    positionX = candidatesForSpawn[random].positionX;
+                }
+                int level = (int)Math.Sqrt(Math.Abs(mapWidth / 2 - positionX) + Math.Abs(mapHeight / 2 - positionY));
+                EnemyParent enemy = new EnemyVeigar(positionX, positionY, level);
+                if (candidatesForSpawn.Count != 0)
+                {
+                    enemies.Add((IEnemy)enemy);
+                }              
             }
-            else
-            {
-                positionY = position;
-                positionX = player.positionX;//TODO
-            }
-            int level = (int)Math.Sqrt(Math.Abs(mapWidth / 2 - positionX) + Math.Abs(mapHeight / 2 - positionY));
-            EnemyParent enemy = new EnemyVeigar(positionX, positionY, level);
-            enemies.Add((IEnemy)enemy);
         }
         public void despawnEnemy(bool row, int position)
         {
