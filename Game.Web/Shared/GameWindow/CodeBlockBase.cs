@@ -1,4 +1,5 @@
 ﻿using Game.Models;
+using Game.Web.Shared.GameWindow;
 using Game.Web.Shared.GameWindow.Commands;
 using Microsoft.AspNetCore.Components;
 using System;
@@ -12,6 +13,9 @@ namespace Game.Web.Pages
     {
         [Parameter]
         public MapBase mapBase { get; set; }
+        [Parameter]
+        public CombatBase combat { get; set; }
+
         public double stamina =70;
 
         public List<ICommands> Commands = new List<ICommands>();
@@ -121,6 +125,9 @@ namespace Game.Web.Pages
                         case "set":
                             Commands.Add(new Set(this, line.Split(' ')[1], int.Parse(line.Split(' ')[2])));
                             break;
+                        case "attack":
+                            Commands.Add(new Attack(this,mapBase));
+                            break;
                     }
                 }
             }
@@ -189,6 +196,7 @@ namespace Game.Web.Pages
         {
             visibleInfo = "visible"; 
             disabledSubmit = true;
+            
         }
         public void addTextToConsole(string text,string color) 
         {

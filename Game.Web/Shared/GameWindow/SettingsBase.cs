@@ -59,6 +59,8 @@ namespace Game.Web.Shared.GameWindow
             map.renderWidth = width;
 
             map.refresh();
+            map.chechEnemies();
+            map.refresh();
             codeBlock.visibleSettings = "hidden";
             codeBlock.disabledSubmit = false;
         }

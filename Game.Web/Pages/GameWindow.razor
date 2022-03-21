@@ -6,7 +6,8 @@
 @inherits GameWindowBase
 
 <Map @ref="map"></Map>
-<CodeBlock @ref="codeBlock" mapBase="@map"></CodeBlock>
+<CodeBlock @ref="codeBlock" mapBase="@map" Combat="@combat"></CodeBlock>
 <Inventory player="@player"></Inventory>
 <Settings codeBlock="@codeBlock" map="@map"></Settings>
 <Info codeBlock="@codeBlock"></Info>
+<Combat @ref="combat" codeBlock="@codeBlock"></Combat>

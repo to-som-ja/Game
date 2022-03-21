@@ -1,4 +1,5 @@
 ﻿using Game.Models;
+using Game.Web.Shared.GameWindow;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections;
@@ -16,6 +17,7 @@ namespace Game.Web.Pages
         protected MapBase map;
         protected CodeBlockBase codeBlock;
         protected Player player;
+        protected CombatBase combat;
         protected override void OnAfterRender(bool firstRender)
         {
             StateHasChanged();

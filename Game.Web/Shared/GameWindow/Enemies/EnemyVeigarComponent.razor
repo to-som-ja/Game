@@ -1,0 +1,21 @@
+﻿@using Game.Web.Pages
+
+<h3>@veigar.name @veigar.level </h3>
+<button @onclick="click"> click</button>
+
+@code {
+    [CascadingParameter]
+    public AppState appState { get; set; }
+    [Parameter]
+    public EnemyVeigar veigar { get; set; }
+
+    protected void click()
+    {
+        appState.Action?.Invoke();
+        var dictionary = new Dictionary<string, object>()
+        {
+            {"key1","22" }
+        };
+        appState.ActionWithParameters?.Invoke(dictionary);
+    }
+}
