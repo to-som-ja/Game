@@ -1,79 +1,108 @@
 ﻿@using Game.Web.Pages
 @using System.Threading
 @using System.Diagnostics
+@inject IJSRuntime jsRuntime
 
-<h3>@veigar.name @veigar.level </h3>
-<h5>Kill monster under x seconds</h5>
+<h3>@enemy.name @enemy.level </h3>
+<h5>Click on small button, be fast</h5>
 <div class="hpBar">
     <div class="hpBarLeft" style="@styleHPString"></div>
 </div>
+<div class="brandCombat" @onclick="wrongClick" id="box">
+    <button @onclick="click" style="@position" class="changePositionBtn btn btn-light"></button>
+</div>
 <div class="buttonsDiv">
-    <button @onclick="click" class="btn btn-light">ATTACK</button>
     <button @onclick="exit" class="btn btn-danger">EXIT</button>
 </div>
-<p>TIME: @Math.Round(seconds, 2)</p>
-<h3>@failed</h3>
+<p>@text</p>
 
 @code {
     [CascadingParameter]
     public AppState appState { get; set; }
     [Parameter]
-    public EnemyBrand veigar { get; set; }
+    public EnemyBrand enemy { get; set; }
+    [Parameter]
+    public Player player { get; set; }
+
     public string styleHPString = "width: 100%";
-    public string failed = "";
+    public string failed = " ";
     public int full = 0;
-    double seconds = 0;
+    int width;
     bool dead = false;
-    Stopwatch stopWatch = new Stopwatch();
+    string position;
+    string text;
     Dictionary<string, object> dictionary = new Dictionary<string, object>();
+    Random rnd = new Random();
+    bool clicked = false;
 
     protected void exit()
     {
 
         styleHPString = "width: 100%";
-        if (failed == "FAILED")
+        if (enemy.hp >0&& full!=0)
         {
-             veigar.hp = full;
+            enemy.hp = full;
         }
         failed = "";
-        seconds = 0;
         dead = false;
-        stopWatch.Reset();
         appState.Action?.Invoke();
-        veigar.hp = full;
+        if (full!=0)
+        {
+            enemy.hp = full;
+        }
         full = 0;
-        // appState.ActionWithParameters?.Invoke(dictionary);
     }
-    protected void click()
+    protected async void click()
     {
+        clicked = true;
         if (!dead)
         {
             if (full == 0)
             {
-                full = veigar.hp;
+                full = enemy.hp;
             }
-            stopWatch.Stop();
-            TimeSpan ts = stopWatch.Elapsed;
-            seconds = ts.TotalSeconds;
-            int dmg = 5;
-            veigar.hp -= dmg;
-            int hpBar = veigar.hp * 100 / full;
+            text = " ";
+            width = await jsRuntime.InvokeAsync<int>("getWidth");
+            int top = rnd.Next(0, 200 - 20);
+            int left = rnd.Next(0, width - 20);
+            position = $"top: {top}px; left: {left}px";
+
+            enemy.hp -= player.damage;
+            int hpBar = enemy.hp * 100 / full;
             styleHPString = $"width: {hpBar}%";
-            if (veigar.hp <= 0)
+            if (enemy.hp <= 0)
             {
-                //if (seconds < veigar.maxTime)
-                //{
-                //    dead = true;
-                //    failed = "Succesfull";
-                //}
-                //else
-                //{
-                //    failed = "FAILED";
-                //}
+                dead = true;
+                text = "Succesfull";
             }
-            else
+        }
+        clicked = false;
+    }
+    protected void wrongClick()
+    {
+        if (!dead)
+        {
+            if (!clicked)
             {
-                stopWatch.Start();
+                if (full == 0)
+                {
+                    full = enemy.hp;
+                }
+                text = "missed";
+                if (enemy.hp < full)
+                {
+                    enemy.hp += player.damage;
+                    if (enemy.hp > full)
+                    {
+                        enemy.hp = full;
+                    }
+                }
+                else
+                {
+                    enemy.hp = full;
+                }
+                int hpBar = enemy.hp * 100 / full;
+                styleHPString = $"width: {hpBar}%";
             }
         }
     }

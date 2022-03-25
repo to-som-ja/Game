@@ -23,19 +23,26 @@ namespace Game.Web.Shared.GameWindow
         protected IEnemy enemy;
         protected override void OnInitialized()
         {
-            appState.Action = refresh;
+            appState.Action = endCombat;
             appState.ActionWithParameters = clickWithParameters;
             PropertyChanged += (o, e) => StateHasChanged();
             StateHasChanged();
         }
-        private void refresh()
+        private void endCombat()
         {
             // PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
             visible = "hidden";
             if (((EnemyParent)enemy).hp <= 0)
             {
+                //codeBlock.mapBase.player.experience += ((EnemyParent)enemy).level;
+                codeBlock.mapBase.player.experience += 20;
                 codeBlock.mapBase.enemies.Remove(enemy);
                 codeBlock.mapBase.refresh();
+                codeBlock.addTextToConsole("Enemy defeated", "green");
+                if (codeBlock.mapBase.player.levelUp())
+                {
+                    codeBlock.addTextToConsole("LEVEL UP", "green");
+                }
             }
             waiting = false;
         }
@@ -52,7 +59,8 @@ namespace Game.Web.Shared.GameWindow
             waiting = true;
             data.Clear();
             visible = "visible";
-            data.Add("veigar", enemy);           
+            data.Add("enemy", enemy);
+            data.Add("player", codeBlock.mapBase.player);
             type = enemy.ComponentType();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
             codeBlock.mapBase.refresh();

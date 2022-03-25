@@ -13,6 +13,7 @@ namespace Game.Web.Shared.GameWindow.Commands
         int staminaUse = 3;
         public Direction direction = Direction.North;
         public string textDistance;
+        Procedure procedure;
 
         public Move(CodeBlockBase codeBlock, MapBase map, Direction direction, string textDistance)
         {
@@ -21,12 +22,28 @@ namespace Game.Web.Shared.GameWindow.Commands
             this.textDistance = textDistance;
             this.codeBlock = codeBlock;
         }
+        public Move(CodeBlockBase codeBlock, MapBase map, Procedure procedure, Direction direction, string textDistance)
+        {
+            this.map = map;
+            this.direction = direction;
+            this.textDistance = textDistance;
+            this.codeBlock = codeBlock;
+            this.procedure = procedure;
+        }
         public async Task execute()
         {
             int distance;
             if (!Int32.TryParse(textDistance, out distance))
             {
-                distance = codeBlock.integers[textDistance];
+                if (procedure==null) 
+                {
+                    distance = codeBlock.integers[textDistance]; 
+                }
+                else 
+                {
+                    distance = procedure.integers[textDistance];
+                }
+
             }
             bool noStamina = false;
             int dir = 0;

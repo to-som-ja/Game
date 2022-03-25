@@ -38,7 +38,7 @@ namespace Game.Web.Pages
 
         protected override void OnInitialized()
         {
-            rnd = new Random();
+            rnd = new Random(2);
             player = new Player(mapWidth / 2, mapHeight / 2, "Images/player.png");
             player.relativePositionX = renderWidth / 2;
             player.relativePositionY = renderHeight / 2;
@@ -309,7 +309,8 @@ namespace Game.Web.Pages
                 }
                 int level = (int)Math.Sqrt(Math.Abs(mapWidth / 2 - positionX) + Math.Abs(mapHeight / 2 - positionY));
                 EnemyParent enemy = null;
-                switch (rnd.Next(0, 5))
+                //switch (rnd.Next(0, 5))
+                switch(0)
                 {
                     case 0:
                         enemy = new EnemyVeigar(positionX, positionY, level);

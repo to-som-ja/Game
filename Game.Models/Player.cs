@@ -8,6 +8,9 @@ namespace Game.Models
     {
         public int positionX { get; set; }
         public int positionY { get; set; }
+        public int level { get; set; }
+        public int experience { get; set; }
+        public int damage { get; set; }
         public int relativePositionX { get; set; }
         public int relativePositionY { get; set; }
         public string ImagePath { get; set; }
@@ -20,6 +23,20 @@ namespace Game.Models
             this.ImagePath = ImagePath; 
             Items = new List<Item>();
             direction = Direction.South;
+            level = 1;
+            experience = 0;
+            damage = 4;
+        }
+        public bool levelUp()
+        {
+            if (experience >= level * 10)
+            {
+                experience = experience - level * 10;
+                level++;
+                damage += 2;
+                return true;
+            }
+            return false;
         }
     }
 }

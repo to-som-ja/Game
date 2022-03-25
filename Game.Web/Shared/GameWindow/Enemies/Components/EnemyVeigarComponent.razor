@@ -2,8 +2,8 @@
 @using System.Threading
 @using System.Diagnostics
 
-<h3>@veigar.name @veigar.level </h3>
-<h5>Kill monster under @veigar.maxTime seconds</h5>
+<h3>@enemy.name @enemy.level </h3>
+<h5>Kill monster under @enemy.maxTime seconds</h5>
 <div class="hpBar">
     <div class="hpBarLeft" style="@styleHPString"></div>
 </div>
@@ -18,7 +18,10 @@
     [CascadingParameter]
     public AppState appState { get; set; }
     [Parameter]
-    public EnemyVeigar veigar { get; set; }
+    public EnemyVeigar enemy { get; set; }
+    [Parameter]
+    public Player player { get; set; }
+
     public string styleHPString = "width: 100%";
     public string failed = "";
     public int full = 0;
@@ -33,14 +36,17 @@
         styleHPString = "width: 100%";
         if (failed == "FAILED")
         {
-             veigar.hp = full;
+             enemy.hp = full;
         }
         failed = "";
         seconds = 0;
         dead = false;
         stopWatch.Reset();
         appState.Action?.Invoke();
-        veigar.hp = full;
+        if (full!=0)
+        {
+            enemy.hp = full;
+        }
         full = 0;
         // appState.ActionWithParameters?.Invoke(dictionary);
     }
@@ -50,18 +56,17 @@
         {
             if (full == 0)
             {
-                full = veigar.hp;
+                full = enemy.hp;
             }
             stopWatch.Stop();
             TimeSpan ts = stopWatch.Elapsed;
             seconds = ts.TotalSeconds;
-            int dmg = 5;
-            veigar.hp -= dmg;
-            int hpBar = veigar.hp * 100 / full;
+            enemy.hp -= player.damage;
+            int hpBar = enemy.hp * 100 / full;
             styleHPString = $"width: {hpBar}%";
-            if (veigar.hp <= 0)
+            if (enemy.hp <= 0)
             {
-                if (seconds < veigar.maxTime)
+                if (seconds < enemy.maxTime)
                 {
                     dead = true;
                     failed = "Succesfull";

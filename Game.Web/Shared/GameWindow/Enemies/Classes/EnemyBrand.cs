@@ -11,7 +11,7 @@ namespace Game.Web.Shared.GameWindow.Enemies
         {
             name = "Brand";
             imagePath = "Images/Enemies/enemy-Brand.png";
-            hp = 1000;
+            hp = 100;
         }
 
         public Type ComponentType()

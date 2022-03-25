@@ -1,5 +1,158 @@
-﻿<h3>EnemyMordeComponent</h3>
+﻿@using Game.Web.Pages
+@using System.Threading
+@using System.Diagnostics
+@inject IJSRuntime jsRuntime
+
+<h3>@enemy.name @enemy.level </h3>
+<h5>Test your reflexes</h5>
+<div class="hpBar">
+    <div class="hpBarLeft" style="@styleHPString"></div>
+</div>
+<div class="mordeCombat" @onclick="click" style="@styleMordeString">
+    @text
+</div>
+<div class="buttonsDiv">
+    <button @onclick="exit" class="btn btn-danger">EXIT</button>
+</div>
 
 @code {
+    [CascadingParameter]
+    public AppState appState { get; set; }
+    [Parameter]
+    public EnemyMorde enemy { get; set; }
+    [Parameter]
+    public Player player { get; set; }
 
+    public string styleHPString = "width: 100%";
+    public int full = 0;
+    int width;
+    bool dead = false;
+    string styleMordeString = "background-color:#00ABFFD0;border-color: #00ABFF;";//blue
+    string text = "READY";
+    Dictionary<string, object> dictionary = new Dictionary<string, object>();
+    Stopwatch stopWatch = new Stopwatch();
+    Random rnd = new Random();
+    bool waiting = false;
+    bool correct = false;
+    int time = 0;
+    protected void exit()
+    {
+        waiting = false;
+        correct = false;
+        styleMordeString = "background-color:#00ABFFD0;border-color: #00ABFF;";//blue
+        text = "READY";
+        styleHPString = "width: 100%";
+        if (enemy.hp > 0 && full != 0)
+        {
+            enemy.hp = full;
+        }
+        dead = false;
+        appState.Action?.Invoke();
+        if (full != 0)
+        {
+            enemy.hp = full;
+        }
+        full = 0;
+    }
+    protected async void click()
+    {   
+        stopWatch.Stop();
+        if (!dead)
+        {
+            if (full == 0)
+            {
+                full = enemy.hp;
+            }
+            if (!waiting)
+            {
+                if (correct)
+                {                    
+                    time = (int)stopWatch.Elapsed.TotalMilliseconds;
+                    text = time + " ms";
+                    styleMordeString = "background-color:#00ABFFD0;border-color: #00ABFF;";//blue
+                    if (time < 500)
+                    {
+                        enemy.hp -= player.damage*3;
+                        int hpBar = enemy.hp * 100 / full;
+                        styleHPString = $"width: {hpBar}%";
+                        if (enemy.hp <= 0)
+                        {
+                            dead = true;
+                            text = "Succesfull";
+                        }
+                    }
+                    else
+                    {
+                        text = time + " ms Too slow";
+                        if (enemy.hp < full)
+                        {
+                            enemy.hp += player.damage*2;
+                            if (enemy.hp > full)
+                            {
+                                enemy.hp = full;
+                            }
+                        }
+                        else
+                        {
+                            enemy.hp = full;
+                        }
+                        int hpBar = enemy.hp * 100 / full;
+                        styleHPString = $"width: {hpBar}%";
+                    }
+                    waiting = false;
+                    correct = false;
+                }
+                else
+                {
+                    stopWatch.Reset();
+                    text = "WAIT";
+                    styleMordeString = "background-color:#ED232CD0;border-color: #ED232C;";//red
+                    timer();
+                    correct = true;
+                }
+
+            }
+            else
+            {
+                text = "TO EARLY";
+                styleMordeString = "background-color:#00ABFFD0;border-color: #00ABFF;";//blue
+                waiting = false;
+                correct = false;
+                if (enemy.hp < full)
+                        {
+                            enemy.hp += player.damage*4;
+                            if (enemy.hp > full)
+                            {
+                                enemy.hp = full;
+                            }
+                        }
+                        else
+                        {
+                            enemy.hp = full;
+                        }
+                        int hpBar = enemy.hp * 100 / full;
+                        styleHPString = $"width: {hpBar}%";
+            }
+
+
+
+
+
+        }
+    }
+    protected async Task timer()
+    {
+        int time = rnd.Next(1000, 5000);
+        waiting = true;
+        await Task.Delay(time);
+        if (waiting)
+        {
+            text = "CLICK";
+            styleMordeString = "background-color:#BDE038D0;border-color: #BDE038;";//green
+            waiting = false;
+            stopWatch.Start();
+        }
+
+    }
 }
+

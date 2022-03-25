@@ -10,6 +10,7 @@ namespace Game.Web.Shared.GameWindow.Commands
         public int count;
         public int maxCount;
         public bool start;
+        Procedure procedure;
 
         public ForLoop(CodeBlockBase codeBlock, int startLine,int count)
         {
@@ -17,7 +18,16 @@ namespace Game.Web.Shared.GameWindow.Commands
             this.startLine = startLine;
             this.count = count;
             this.maxCount = count;
+            start = true;            
+        }
+        public ForLoop(CodeBlockBase codeBlock,Procedure procedure, int startLine, int count)
+        {
+            this.codeBlock = codeBlock;
+            this.startLine = startLine;
+            this.count = count;
+            this.maxCount = count;
             start = true;
+            this.procedure = procedure;
         }
         public Task execute()
         {
@@ -30,7 +40,14 @@ namespace Game.Web.Shared.GameWindow.Commands
             {
                 if (count > 0)
                 {
-                    codeBlock.line = startLine;
+                    if (procedure==null)
+                    {
+                        codeBlock.line = startLine;
+                    }
+                    else
+                    {
+                        procedure.line = startLine;
+                    }                 
                 }
                 else
                 {

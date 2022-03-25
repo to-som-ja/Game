@@ -100,9 +100,8 @@ body {
     position: absolute;
 }
 .settings {
-
     width: 20%;
-    height:auto;
+    height: auto;
     background-color: #646464cf;
     z-index: 2;
     position: absolute;
@@ -110,6 +109,9 @@ body {
     top: 50%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+    border-style: solid;
+    border-width: 4px;
+    border-color: #646464;
 }
 
  h1 {
@@ -191,12 +193,16 @@ h5 {
 .buttonsDiv {
     text-align: center;
     width: 80%;
-    margin:auto;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .combat {
     width: 20%;
     height: auto;
-    background-color: #A62B1FCC;
+    /*background-color: #A62B1FCC;*/
+    background-color: #E63B60CB;
     z-index: 2;
     position: absolute;
     left: 50%;
@@ -205,8 +211,31 @@ h5 {
     transform: translate(-50%, -50%);
     border-style: solid;
     border-width: 3px;
-    border-color: #A62B1F;
+    border-color: #E63B60;
 }
 .combat p {
     text-align: center;
+}
+.brandCombat {
+    width: 100%;
+    height: 200px;
+    background-color: #646464cf;
+    margin-top: 20px;
+}
+.changePositionBtn {
+    position: relative;
+    height:3px;
+    width:3px;
+}
+.mordeCombat {
+    width: 100%;
+    height: 200px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-style: solid;
+    border-width: 3px;
+    font-weight: 1000;
+    font-family: 'Open sans', sans-serif;
 }

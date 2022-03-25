@@ -16,9 +16,10 @@ namespace Game.Web.Pages
         [Parameter]
         public CombatBase combat { get; set; }
 
-        public double stamina =20;
+        public double stamina = 80;
 
         public List<ICommands> Commands = new List<ICommands>();
+        public Dictionary<string, Procedure> Procedures = new Dictionary<string, Procedure>();
         protected Code codeLines;
         public Stack forLoops;
         //public List<Dictionary<int,string>> integers;
@@ -49,7 +50,7 @@ namespace Game.Web.Pages
         }
         protected async override void OnParametersSet()
         {
-            
+
         }
         public async Task Stamina()
         {
@@ -64,13 +65,13 @@ namespace Game.Web.Pages
                 {
                     await Task.Delay(1000);
                 }
-            }       
+            }
         }
         public async Task Wait(int time)
         {
             await Task.Delay(time);
         }
-        
+
         public async Task AddStamina(int time)
         {
             for (int i = 0; i < time * 20; i++)
@@ -86,61 +87,95 @@ namespace Game.Web.Pages
         {
             disabledSubmit = true;
             disabledStop = false;
+            string procedureName = "";
+            bool inProcedure = false;
             if (codeLines.text != null)
             {
                 foreach (var line in codeLines.text.Split('\n'))
                 {
                     string command = line.Split(' ')[0];
-                    switch (command.ToLower())
+                    if (inProcedure)
                     {
-                        case "go":
-                            Commands.Add(new Move(this,mapBase, getDir(line.Split(' ')[1]), line.Split(' ')[2]));
-                            break;
-                        case "forloop":
-                            int count;
-                            string s = line.Split(' ')[1];
-                            if (!Int32.TryParse(s, out count))
-                            {
-                                count = integers[s];
-                            }
-                            forLoops.Push(new ForLoop(this, Commands.Count - 1, count));
-                            Commands.Add((ICommands)forLoops.Peek());
-                            break;
-                        case "endfor":
-                            Commands.Add((ICommands)forLoops.Pop());
-                            break;
-                        case "chop":
-                            Commands.Add(new Chop(this,mapBase));
-                            break;
-                        case "mine":
-                            Commands.Add(new Mine(this,mapBase));
-                            break;
-                        case "sleep":
-                            Commands.Add(new Sleep(this, int.Parse(line.Split(' ')[1])));
-                            break;
-                        case "int":
-                            integers.Add(line.Split(' ')[1], int.Parse(line.Split(' ')[2]));
-                            break;
-                        case "inc":
-                            Commands.Add(new Int(this, true,line.Split(' ')[1]));
-                            break;
-                        case "dec":
-                            Commands.Add(new Int(this, false, line.Split(' ')[1]));
-                            break;
-                        case "set":
-                            Commands.Add(new Set(this, line.Split(' ')[1], int.Parse(line.Split(' ')[2])));
-                            break;
-                        case "attack":
-                            Commands.Add(new Attack(this,mapBase));
-                            Commands.Add(new Wait(this, mapBase));
-                            break;
-                        case "look":
-                            Commands.Add(new Look(this, mapBase, getDir(line.Split(' ')[1])));
-                            break;
+                        if(command == "endproc")
+                        {
+                            inProcedure = false;
+                        }
+                        else
+                        {
+                            Procedures[procedureName].insertLine(line);
+                        }
+                    }
+                    else
+                    {                       
+                        switch (command.ToLower())
+                        {
+                            case "go":
+                                Commands.Add(new Move(this, mapBase, getDir(line.Split(' ')[1]), line.Split(' ')[2]));
+                                break;
+                            case "forloop":
+                                int count;
+                                string s = line.Split(' ')[1];
+                                if (!Int32.TryParse(s, out count))
+                                {
+                                    count = integers[s];
+                                }
+                                forLoops.Push(new ForLoop(this, Commands.Count - 1, count));
+                                Commands.Add((ICommands)forLoops.Peek());
+                                break;
+                            case "endfor":
+                                Commands.Add((ICommands)forLoops.Pop());
+                                break;
+                            case "chop":
+                                Commands.Add(new Chop(this, mapBase));
+                                break;
+                            case "mine":
+                                Commands.Add(new Mine(this, mapBase));
+                                break;
+                            case "sleep":
+                                Commands.Add(new Sleep(this, int.Parse(line.Split(' ')[1])));
+                                break;
+                            case "int":
+                                integers.Add(line.Split(' ')[1], int.Parse(line.Split(' ')[2]));
+                                break;
+                            case "inc":
+                                Commands.Add(new Int(this, true, line.Split(' ')[1]));
+                                break;
+                            case "dec":
+                                Commands.Add(new Int(this, false, line.Split(' ')[1]));
+                                break;
+                            case "set":
+                                Commands.Add(new Set(this, line.Split(' ')[1], int.Parse(line.Split(' ')[2])));
+                                break;
+                            case "attack":
+                                Commands.Add(new Attack(this, mapBase));
+                                Commands.Add(new Wait(this, mapBase));
+                                break;
+                            case "look":
+                                Commands.Add(new Look(this, mapBase, getDir(line.Split(' ')[1])));
+                                break;
+                            case "stats":
+                                Commands.Add(new Stats(this, mapBase));
+                                break;
+                            case "inspect":
+                                Commands.Add(new Inspect(this, mapBase));
+                                break;
+                            case "craft":
+                                Commands.Add(new Craft(this, mapBase, line.Split(' ')[1]));
+                                break;
+                            case "startproc":
+                                procedureName = line.Split(' ')[1];
+                                inProcedure = true;
+                                Procedures.Add(procedureName,new Procedure(this, mapBase));
+                                break;                            
+                            case "proc":
+                                string name = line.Split(' ')[1];
+                                    Commands.Add(Procedures[name]);
+                                break;
+                        }
                     }
                 }
             }
-            if(forLoops.Count != 0)
+            if (forLoops.Count != 0)
             {
                 addTextToConsole("Missing endfor", "red");
                 Commands.Clear();
@@ -150,7 +185,7 @@ namespace Game.Web.Pages
             else
             {
                 await execute();
-            }           
+            }
             disabledSubmit = false;
             disabledStop = true;
         }
@@ -191,23 +226,23 @@ namespace Game.Web.Pages
             Commands.Clear();
             integers.Clear();
             consoleColor = "green";
-            addTextToConsole("complete","green");
+            addTextToConsole("complete", "green");
             line = 0;
             stopped = false;
             textStop = "Stop";
         }
         public void showSettings()
-        {   
+        {
             visibleSettings = "visible";
             disabledSubmit = true;
         }
         public void showInfo()
         {
-            visibleInfo = "visible"; 
+            visibleInfo = "visible";
             disabledSubmit = true;
-            
+
         }
-        public void addTextToConsole(string text,string color) 
+        public void addTextToConsole(string text, string color)
         {
             line4 = line3;
             line4Color = line3Color;
