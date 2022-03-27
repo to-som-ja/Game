@@ -1,11 +1,12 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
 body {
-    
     background: #005AA7; /* fallback for old browsers */
     background: -webkit-linear-gradient(to left, #FFFDE4, #005AA7); /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to left, #FFFDE4, #005AA7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
-.blocks {
+
+.game .blocks {
     padding: 0;
     margin: 0;
     float: left;
@@ -14,7 +15,7 @@ body {
     border-color: #007FFF;
 }
 
-.items {
+.game .items {
     min-width: 360px;
     padding: 0;
     margin: 0;
@@ -23,7 +24,7 @@ body {
     padding-top: 40px;
 }
 
-.block {
+.game .block {
     width: 40px;
     height: 40px;
     z-index: 1;
@@ -31,23 +32,25 @@ body {
     /*position:absolute;*/
 }
 
-.item {
+.game .item {
     width: 40px;
     height: 40px;
     z-index: 1;
     /*position:absolute;*/
 }
 
-.player {
+.game .player {
     z-index: 2;
     width: 40px;
     height: 40px;
     position: absolute;
 }
-.row{
-    width:100%;
+
+.game .row {
+    width: 100%;
 }
-.codeBlock {
+
+.game .codeBlock {
     height: 600px;
     width: 360px;
     float: left;
@@ -55,13 +58,13 @@ body {
     padding-top: 40px;
 }
 
-.textInput {
+.game .textInput {
     width: 100%;
     height: 80%;
     max-height: 600px;
 }
 
-    .textInput textarea {
+    .game .textInput textarea {
         width: 100%;
         height: 50%;
         max-height: 550px;
@@ -73,7 +76,8 @@ body {
         font-weight: 600;
         font-family: 'Open sans', sans-serif;
     }
-        .textInput textarea:focus {
+
+        .game .textInput textarea:focus {
             width: 100%;
             height: 50%;
             max-height: 550px;
@@ -83,12 +87,13 @@ body {
             border-width: 1px;
             border-color: #5badff;
         }
-.btn{
-    padding:7px;
-    margin:10px;
+
+.game .btn {
+    padding: 7px;
+    margin: 10px;
 }
 
-.spinner {
+.game .spinner {
     border: 16px solid silver;
     border-top: 16px solid #337AB7;
     border-radius: 50%;
@@ -99,7 +104,8 @@ body {
     left: 55%;
     position: absolute;
 }
-.settings {
+
+.game .settings {
     width: 20%;
     height: auto;
     background-color: #646464cf;
@@ -114,28 +120,32 @@ body {
     border-color: #646464;
 }
 
- h1 {
-        text-align: center;
-        margin-top: 5px;
-        font-weight: 600;
-        font-family: 'Open sans', sans-serif;
-    }
-h3 {
-        text-align: center;
-        margin-top: 5px;
-        font-weight: 400;
-        font-family: 'Open sans', sans-serif;
-    }
-.slider {
+.game h1 {
+    text-align: center;
+    margin-top: 5px;
+    font-weight: 600;
+    font-family: 'Open sans', sans-serif;
+}
+
+.game h3 {
+    text-align: center;
+    margin-top: 5px;
+    font-weight: 400;
+    font-family: 'Open sans', sans-serif;
+}
+
+.game .slider {
     margin: auto;
     width: 70%;
     display: flex;
     justify-content: space-between; /* not center */
     align-items: center;
 }
-.settingsbtn{
-    width:80px;
+
+.game .settingsbtn {
+    width: 80px;
 }
+
 .console {
     width: 100%;
     height: 100px;
@@ -144,53 +154,64 @@ h3 {
     border: 2px solid #007FFF;
     border-radius: 5px;
 }
-    .console p {
-        margin: 0;
-        font-family: 'Open sans', sans-serif;
-    }
-.infobtn {
+
+.game .console p {
+    margin: 0;
+    font-family: 'Open sans', sans-serif;
+}
+
+.game .infobtn {
     text-align: center;
     display: flex;
     justify-content: space-between; /* not center */
     align-items: center;
     margin: auto;
 }
-.settings p {
+
+.game .settings p {
     text-align: center;
 }
-.btn{
-    margin:5px;
+
+.game .btn {
+    margin: 5px;
 }
-.rz-progressbar{
-    margin:5px 0 5px 0;
+
+.game .rz-progressbar {
+    margin: 5px 0 5px 0;
 }
-.commandName{
-    margin-bottom:0;
+
+.game .commandName {
+    margin-bottom: 0;
 }
-.info {
-    max-height:500px;
+
+.game .info {
+    max-height: 500px;
     overflow-y: scroll
 }
-.hpBar {
+
+.game .hpBar {
     height: 20px;
     width: 80%;
     margin: auto;
     display: flex;
     justify-content: space-between; /* not center */
     align-items: center;
-    background-color:red;
+    background-color: red;
 }
-.hpBarLeft {
+
+.game .hpBarLeft {
     height: 20px;
     background-color: green;
 }
-h5 {
+
+.game h5 {
     text-align: center;
     margin-top: 3px;
     font-weight: 200;
     font-family: 'Open sans', sans-serif;
 }
-.buttonsDiv {
+
+.game .buttonsDiv {
     text-align: center;
     width: 80%;
     margin: auto;
@@ -198,7 +219,8 @@ h5 {
     justify-content: center;
     align-items: center;
 }
-.combat {
+
+.game .combat {
     width: 20%;
     height: auto;
     /*background-color: #A62B1FCC;*/
@@ -213,21 +235,25 @@ h5 {
     border-width: 3px;
     border-color: #E63B60;
 }
-.combat p {
-    text-align: center;
-}
-.brandCombat {
+
+    .game .combat p {
+        text-align: center;
+    }
+
+.game .brandCombat {
     width: 100%;
     height: 200px;
     background-color: #646464cf;
     margin-top: 20px;
 }
-.changePositionBtn {
+
+.game .changePositionBtn {
     position: relative;
-    height:3px;
-    width:3px;
+    height: 3px;
+    width: 3px;
 }
-.mordeCombat {
+
+.game .mordeCombat {
     width: 100%;
     height: 200px;
     margin-top: 20px;
@@ -239,3 +265,109 @@ h5 {
     font-weight: 1000;
     font-family: 'Open sans', sans-serif;
 }
+/******************************************************************************************/
+
+.index {
+    font-family: Roboto, Arial, sans-serif;
+    font-size: 15px;
+    width: 100%;
+    height: 100px;
+    background: #005AA7; /* fallback for old browsers */
+    background: -webkit-linear-gradient(to left, #FFFDE4, #005AA7); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #FFFDE4, #005AA7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.login {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+.register {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+    .index form {
+        border: 5px solid #f1f1f1;
+        background-color:azure;
+    }
+
+.index input[type=text], input[type=password] {
+    width: 100%;
+    padding: 16px 8px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.index button {
+    background-color: #8ebf42;
+    color: white;
+    padding: 14px 0;
+    margin: 10px 0;
+    border: none;
+    cursor: grabbing;
+    width: 100%;
+}
+
+.index h1 {
+    text-align: center;
+    fone-size: 18;
+}
+
+.index button:hover {
+    opacity: 0.8;
+}
+
+    .index .formcontainer {
+        text-align: left;
+        margin: 24px 50px 12px;
+    }
+
+    .index .container {
+        padding: 16px 0;
+        text-align: left;
+    }
+
+.index span.psw {
+    float: right;
+    padding-top: 0;
+    padding-right: 15px;
+}
+.mainBtn {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    width:20%;
+}
+    .mainBtn button {
+        background-color: #8ebf42;
+        color: white;
+        padding: 14px 0;
+        margin: 10px 0;
+        border: none;
+        cursor: grabbing;
+    }
+        .mainBtn button:hover {
+            background-color: #8ebf42;
+            color: white;
+            padding: 14px 0;
+            margin: 10px 0;
+            border: none;
+            opacity: 0.8;
+        }
+
+/* Change styles for span on extra small screens */
+@media screen and (max-width: 300px) {
+    .index span.psw {
+        display: block;
+        float: none;
+    }
+    

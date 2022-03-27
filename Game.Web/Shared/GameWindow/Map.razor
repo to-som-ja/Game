@@ -5,84 +5,103 @@
 
 
 <div class="blocks">
-            <img class="player" style="@PlayerCss" src="@player.ImagePath" />
-    @foreach(EnemyParent enemy in enemies)
+    <img class="player" style="@PlayerCss" src="@player.ImagePath" />
+    @foreach (EnemyParent enemy in enemies)
     {
         <img class="player" style="@positionEnemy(enemy)" src="@enemy.imagePath" />
     }
-            @for (int i = renderHeightStart; i < renderHeightEnd; i++)
+    @for (int i = renderHeightStart; i < renderHeightEnd; i++)
+    {
+        <div>
+            @for (int j = renderWidthStart; j < renderWidthEnd; j++)
             {
-                <div>
-                    @for (int j = renderWidthStart; j < renderWidthEnd; j++)
-                    {<img class="block" src="@mapGrid[i * mapWidth + j].ImagePath" />}
-                </div>
+                <img class="block" src="@mapGrid[i * mapWidth + j].ImagePath" />
             }
         </div>
+    }
+</div>
 
 @code {
     string PlayerCss => $"top: {top}px; left: {left}px";
 
     protected async override void OnAfterRender(bool firstRender)
     {
-        Browser.Resize += UpdatedBrowserWidth;
+        Browser.Resize += UpdatedBrowser;
         if (firstRender)
         {
             await setDimensions();
         }
     }
 
-    protected void UpdatedBrowserWidth(object sender, int[] dimension) 
-    {   
-        for (int i = renderHeightStart; i < renderHeightEnd; i++)
-            {
-                if (i != player.positionY)
-                    despawnEnemy(false, i);
-            }
-        int widthBlocks = (int)(dimension[0]-500)/40;
+    protected void UpdatedBrowser(object sender, int[] dimension)
+    {
+        int oldWidthBlocks = renderWidth;
+        int widthBlocks = (int)(dimension[0] - 500) / 40;
         if (widthBlocks < 10)
         {
             widthBlocks = 10;
         }
-        int heightBlocks = (int)(dimension[1])/40;
+        int heightBlocks = (int)(dimension[1]) / 40;
         if (heightBlocks < 5)
         {
             heightBlocks = 5;
         }
         if (widthBlocks % 2 == 0)
+        {
+            renderWidthEnd = player.positionX + widthBlocks / 2;
+        }
+        else
+        {
+            renderWidthEnd = player.positionX + widthBlocks / 2 + 1;
+        }
+        if (heightBlocks % 2 == 0)
+        {
+            renderHeightEnd = player.positionY + heightBlocks / 2;
+        }
+        else
+        {
+            renderHeightEnd = player.positionY + heightBlocks / 2 + 1;
+        }
+        renderHeightStart = player.positionY - heightBlocks / 2;
+        renderWidthStart = player.positionX - widthBlocks / 2;
+        left = 3 + 40 * (player.positionX - renderWidthStart);
+        top = 3 + 40 * (player.positionY - renderHeightStart);
+        renderWidth = widthBlocks;
+        renderHeight = heightBlocks;
+        base.StateHasChanged();
+        if (oldWidthBlocks < renderWidth)
+        {//zvacsenie
+            if (renderWidth - oldWidthBlocks == 1)
             {
-                renderWidthEnd = player.positionX + widthBlocks / 2;
+                if (renderWidth% 2 == 0)
+                {//vlavo
+                    spawnEnemy(true, renderWidthStart);
+                }
+                else
+                {//napravo
+                    spawnEnemy(true, renderWidthEnd-1);
+                }
             }
             else
             {
-                renderWidthEnd = player.positionX + widthBlocks / 2 + 1;
-            }    
-            if (heightBlocks % 2 == 0)
-            {
-                renderHeightEnd = player.positionY + heightBlocks / 2;
+                for (int i = renderWidthStart; i <= renderWidthStart + ((renderWidth - oldWidthBlocks) / 2); i++)
+                {
+                    spawnEnemy(true, i);
+                }
+                for (int i = renderWidthEnd - ((renderWidth - oldWidthBlocks) / 2); i <= renderWidthEnd; i++)
+                {
+                    spawnEnemy(true, i);
+                }
             }
-            else
-            {
-                renderHeightEnd = player.positionY + heightBlocks / 2 + 1;
-            }
-            renderHeightStart = player.positionY - heightBlocks / 2;
-            renderWidthStart = player.positionX - widthBlocks / 2;
-            left = 3 + 40 * (player.positionX - renderWidthStart);
-            top = 3 + 40 * (player.positionY - renderHeightStart);
-            renderWidth = widthBlocks;
-            renderHeight = heightBlocks;
-            base.StateHasChanged();
-            for (int i = renderHeightStart; i < renderHeightEnd; i++)
-            {
-                if (i != player.positionY)
-                    spawnEnemy(false, i);
-            }
-            base.StateHasChanged();   
+        }
+        chechEnemies();
+        base.StateHasChanged();
     }
     public string positionEnemy(EnemyParent enemy)
     {
-        int enemyTop = (enemy.positionY -renderHeightStart) * 40 +3;
-        int enemyLeft = (enemy.positionX - renderWidthStart) * 40 +3;
+        int enemyTop = (enemy.positionY - renderHeightStart) * 40 + 3;
+        int enemyLeft = (enemy.positionX - renderWidthStart) * 40 + 3;
         return $"top: {enemyTop}px; left: {enemyLeft}px";
     }
-    
+
 }
