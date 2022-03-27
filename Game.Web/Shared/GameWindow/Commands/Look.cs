@@ -10,10 +10,10 @@ namespace Game.Web.Shared.GameWindow.Commands
     {
         public MapBase map;
         public CodeBlockBase codeBlock;
-        public Direction direction = Direction.North;
+        public Direction? direction = Direction.North;
 
 
-        public Look(CodeBlockBase codeBlock, MapBase map, Direction direction)
+        public Look(CodeBlockBase codeBlock, MapBase map, Direction? direction)
         {
             this.map = map;
             this.direction = direction;

@@ -14,6 +14,7 @@ namespace Game.Web.Shared.GameWindow.Commands
         public Dictionary<string, int> integers = new Dictionary<string, int>();
         public int line = 0;
         public Stack forLoops=new Stack();
+        bool error;
 
         public Procedure(CodeBlockBase codeBlock, MapBase map)
         {
@@ -26,21 +27,44 @@ namespace Game.Web.Shared.GameWindow.Commands
             string command = line.Split(' ')[0];
             switch (command.ToLower())
             {
-                case "go":
-                    commands.Add(new Move(codeBlock, map,this, codeBlock.getDir(line.Split(' ')[1]), line.Split(' ')[2]));
+                case "go":                
+                    if (line.Split(' ').Length >= 3)
+                        commands.Add(new Move(codeBlock, map, this, codeBlock.getDir(line.Split(' ')[1]), line.Split(' ')[2]));
+                    else
+                        codeBlock.addTextToConsole("Missing arguments", "red");                   
                     break;
-                case "forloop":
-                    int count;
-                    string s = line.Split(' ')[1];
+                case "forloop":                    
+                    int count = 0;
+                    string s = "";
+                    if (line.Split(' ').Length >= 2)
+                    {
+                        s = line.Split(' ')[1];
+                    }
+                    else
+                    {
+                        codeBlock.addTextToConsole("Missing arguments", "red");
+                        error = true;
+                    }
                     if (!Int32.TryParse(s, out count))
                     {
-                        count = integers[s];
+                        if (integers.ContainsKey(s))
+                            count = integers[s];
+                        else
+                        {
+                            codeBlock.addTextToConsole("Wrong value", "red");
+                            error = true;
+                        }
                     }
-                    forLoops.Push(new ForLoop(codeBlock,this, commands.Count - 1, count));
+                    forLoops.Push(new ForLoop(codeBlock, this, commands.Count - 1, count));
                     commands.Add((ICommands)forLoops.Peek());
                     break;
                 case "endfor":
-                    commands.Add((ICommands)forLoops.Pop());
+                    if (forLoops.Count > 0)
+                        commands.Add((ICommands)forLoops.Pop());
+                    else
+                    {
+                        codeBlock.addTextToConsole("Missing forloop", "red");
+                    }
                     break;
                 case "chop":
                     commands.Add(new Chop(codeBlock, map));
@@ -48,27 +72,70 @@ namespace Game.Web.Shared.GameWindow.Commands
                 case "mine":
                     commands.Add(new Mine(codeBlock, map));
                     break;
-                case "sleep":
-                    commands.Add(new Sleep(codeBlock, int.Parse(line.Split(' ')[1])));
+                case "sleep":                   
+                    if (line.Split(' ').Length >= 2)
+                    {
+                        commands.Add(new Sleep(codeBlock, int.Parse(line.Split(' ')[1])));
+                    }
+                    else
+                    {
+                        codeBlock.addTextToConsole("Missing arguments", "red");
+                    }
                     break;
                 case "int":
-                    integers.Add(line.Split(' ')[1], int.Parse(line.Split(' ')[2]));
+                    if (line.Split(' ').Length >= 3)
+                    {
+                        int number = 0;
+                        if (Int32.TryParse(line.Split(' ')[2], out number))
+                        {
+                            if (!integers.TryAdd(line.Split(' ')[1], number))
+                            {
+                                codeBlock.addTextToConsole("Variable already defined", "red");
+                            }
+                        }
+                        else
+                        {
+                            codeBlock.addTextToConsole("Wrong value", "red");
+                        }
+                    }
+                    else
+                        codeBlock.addTextToConsole("Missing arguments", "red");
                     break;
-                case "inc":
-                    commands.Add(new Int(codeBlock, true, line.Split(' ')[1]));
+                case "inc":                   
+                    if (line.Split(' ').Length >= 2)
+                    {
+                        commands.Add(new Int(codeBlock, true,this, line.Split(' ')[1]));
+                    }
+                    else
+                        codeBlock.addTextToConsole("Missing arguments", "red");
                     break;
                 case "dec":
-                    commands.Add(new Int(codeBlock, false, line.Split(' ')[1]));
+                    if (line.Split(' ').Length >= 2)
+                    {
+                        commands.Add(new Int(codeBlock, false,this, line.Split(' ')[1]));
+                    }
+                    else
+                        codeBlock.addTextToConsole("Missing arguments", "red");
                     break;
-                case "set":
-                    commands.Add(new Set(codeBlock, line.Split(' ')[1], int.Parse(line.Split(' ')[2])));
+                case "set":                   
+                    if (line.Split(' ').Length >= 3)
+                    {
+                        commands.Add(new Set(codeBlock,this, line.Split(' ')[1], line.Split(' ')[2]));
+                    }
+                    else
+                        codeBlock.addTextToConsole("Missing arguments", "red");
                     break;
                 case "attack":
                     commands.Add(new Attack(codeBlock, map));
                     commands.Add(new Wait(codeBlock, map));
                     break;
-                case "look":
-                    commands.Add(new Look(codeBlock, map, codeBlock.getDir(line.Split(' ')[1])));
+                case "look":                    
+                    if (line.Split(' ').Length >= 2)
+                    {
+                        commands.Add(new Look(codeBlock, map, codeBlock.getDir(line.Split(' ')[1])));
+                    }
+                    else
+                        codeBlock.addTextToConsole("Missing arguments", "red");
                     break;
                 case "stats":
                     commands.Add(new Stats(codeBlock, map));
@@ -76,9 +143,41 @@ namespace Game.Web.Shared.GameWindow.Commands
                 case "inspect":
                     commands.Add(new Inspect(codeBlock, map));
                     break;
-                case "craft":
-                    commands.Add(new Craft(codeBlock, map, line.Split(' ')[1]));
+                case "craft":                   
+                    if (line.Split(' ').Length >= 2)
+                    {
+                        commands.Add(new Craft(codeBlock, map, line.Split(' ')[1]));
+                    }
+                    else
+                        codeBlock.addTextToConsole("Missing arguments", "red");
                     break;
+                case "":
+                    break;
+                default:
+                    codeBlock.addTextToConsole("Command not found", "red");
+                    break;
+            }
+
+        }
+        public void check()
+        {
+            if (forLoops.Count != 0)
+            {
+                codeBlock.addTextToConsole("Missing endfor", "red");
+                commands.Clear();
+                forLoops.Clear();
+                integers.Clear();
+            }
+            else
+            {
+                if (error)
+                {
+                    //addTextToConsole("ERROR", "red");
+                    commands.Clear();
+                    forLoops.Clear();
+                    integers.Clear();
+                    error = false;
+                }
             }
         }
         public async Task execute()

@@ -9,6 +9,7 @@ namespace Game.Web.Shared.GameWindow.Commands
         public CodeBlockBase codeBlock;
         bool increment;
         string name;
+        Procedure procedure = null;
 
         public Int(CodeBlockBase codeBlock,bool increment, string name)
         {
@@ -16,17 +17,53 @@ namespace Game.Web.Shared.GameWindow.Commands
             this.increment = increment;
             this.name = name;
         }
+        public Int(CodeBlockBase codeBlock, bool increment,Procedure procedure, string name)
+        {
+            this.codeBlock = codeBlock;
+            this.increment = increment;
+            this.name = name;
+            this.procedure = procedure;
+        }
 
         public Task execute()
         {
-            if (increment)
+            if (procedure==null)
             {
-                codeBlock.integers[name]++;
+                if (codeBlock.integers.ContainsKey(name))
+                {
+                    if (increment)
+                    {
+                        codeBlock.integers[name]++;
+                    }
+                    else
+                    {
+                        codeBlock.integers[name]--;
+                    }
+                }
+                else
+                {
+                    codeBlock.addTextToConsole("Variable not found", "red");
+                }
             }
             else
             {
-                codeBlock.integers[name]--;
+                if (procedure.integers.ContainsKey(name))
+                {
+                    if (increment)
+                    {
+                        procedure.integers[name]++;
+                    }
+                    else
+                    {
+                        procedure.integers[name]--;
+                    }
+                }
+                else
+                {
+                    codeBlock.addTextToConsole("Variable not found", "red");
+                }
             }
+            
             return Task.CompletedTask;
         }
     }

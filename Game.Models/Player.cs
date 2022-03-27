@@ -15,7 +15,7 @@ namespace Game.Models
         public int relativePositionY { get; set; }
         public string ImagePath { get; set; }
         public List<Item> Items { get; set; }
-        public Direction direction { get; set; }
+        public Direction? direction { get; set; }
         public Player(int positionX,int positionY,string ImagePath)
         {
             this.positionX = positionX;

@@ -11,18 +11,18 @@ namespace Game.Web.Shared.GameWindow.Commands
         public MapBase map;
         public CodeBlockBase codeBlock;
         int staminaUse = 3;
-        public Direction direction = Direction.North;
+        public Direction? direction = null;
         public string textDistance;
         Procedure procedure;
 
-        public Move(CodeBlockBase codeBlock, MapBase map, Direction direction, string textDistance)
+        public Move(CodeBlockBase codeBlock, MapBase map, Direction? direction, string textDistance)
         {
             this.map = map;
             this.direction = direction;
             this.textDistance = textDistance;
             this.codeBlock = codeBlock;
         }
-        public Move(CodeBlockBase codeBlock, MapBase map, Procedure procedure, Direction direction, string textDistance)
+        public Move(CodeBlockBase codeBlock, MapBase map, Procedure procedure, Direction? direction, string textDistance)
         {
             this.map = map;
             this.direction = direction;
@@ -32,18 +32,23 @@ namespace Game.Web.Shared.GameWindow.Commands
         }
         public async Task execute()
         {
-            int distance;
+            int distance=0;
             if (!Int32.TryParse(textDistance, out distance))
             {
                 if (procedure==null) 
                 {
-                    distance = codeBlock.integers[textDistance]; 
+                    if (codeBlock.integers.ContainsKey(textDistance))
+                        distance = codeBlock.integers[textDistance];
+                    else
+                        codeBlock.addTextToConsole("wrong value", "red");
                 }
                 else 
-                {
-                    distance = procedure.integers[textDistance];
+                {                   
+                    if (procedure.integers.ContainsKey(textDistance))
+                        distance = procedure.integers[textDistance];
+                    else
+                        codeBlock.addTextToConsole("wrong value", "red");
                 }
-
             }
             bool noStamina = false;
             int dir = 0;
@@ -60,6 +65,9 @@ namespace Game.Web.Shared.GameWindow.Commands
                     break;
                 case Direction.West:
                     dir = 3;
+                    break;
+                default:
+                    dir = -1;
                     break;
             }
             if (map.canMove(dir))

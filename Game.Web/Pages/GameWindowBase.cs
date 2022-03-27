@@ -18,11 +18,7 @@ namespace Game.Web.Pages
         protected CodeBlockBase codeBlock;
         protected Player player;
         protected CombatBase combat;
-        protected override void OnAfterRender(bool firstRender)
-        {
-            StateHasChanged();
-            player = map.player;
-        }
+        
     }
 }
 

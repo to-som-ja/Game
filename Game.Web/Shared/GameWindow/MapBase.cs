@@ -3,16 +3,22 @@ using AVXPerlinNoise;
 using Game.Models;
 using Game.Web.Shared.GameWindow.Enemies;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Type = Game.Models.Type;
 
+
 namespace Game.Web.Pages
 {
+    
     public class MapBase : ComponentBase, INotifyPropertyChanged
-    {
+    {   
+        [Inject]
+        public IJSRuntime JS {get; set;}
+
         public List<Block> mapGrid = new List<Block>();
         public Player player;
         protected int mapWidth = 3000;
@@ -37,7 +43,8 @@ namespace Game.Web.Pages
 
 
         protected override void OnInitialized()
-        {
+        {   
+            
             rnd = new Random(2);
             player = new Player(mapWidth / 2, mapHeight / 2, "Images/player.png");
             player.relativePositionX = renderWidth / 2;
@@ -56,14 +63,54 @@ namespace Game.Web.Pages
             renderWidthStart = player.positionX - renderWidth / 2;
             renderHeightEnd = player.positionY + renderHeight / 2;
             renderWidthEnd = player.positionX + renderWidth / 2;
+            PropertyChanged += (o, e) => StateHasChanged();
+            StateHasChanged();
+
+        }
+
+        public async Task  setDimensions()
+        {
+
+            renderWidth = (int)(await JS.InvokeAsync<int>("getWidthWindow") - 500) / 40;
+            if (renderWidth < 10)
+            {
+                renderWidth = 10;
+            }
+            renderHeight = (int)(await JS.InvokeAsync<int>("getHeightWindow")) / 40;
+            if (renderHeight < 5)
+            {
+                renderHeight = 5;
+            }
+            if (renderWidth % 2 == 0)
+            {
+                renderWidthEnd = player.positionX + renderWidth / 2;
+            }
+            else
+            {
+                renderWidthEnd = player.positionX + renderWidth / 2 + 1;
+            }
+            if (renderHeight % 2 == 0)
+            {
+                renderHeightEnd = player.positionY + renderHeight / 2;
+            }
+            else
+            {
+                renderHeightEnd = player.positionY + renderHeight / 2 + 1;
+            }
+            renderHeightStart = player.positionY - renderHeight / 2;
+            renderWidthStart = player.positionX - renderWidth / 2;
+            left = 3 + 40 * (player.positionX - renderWidthStart);
+            top = 3 + 40 * (player.positionY - renderHeightStart);
+            renderWidth = renderWidth;
+            renderHeight = renderHeight;
             for (int i = renderHeightStart; i < renderHeightEnd; i++)
             {
                 if (i != player.positionY)
                     spawnEnemy(false, i);
             }
-            PropertyChanged += (o, e) => StateHasChanged();
-            StateHasChanged();
-
+            base.StateHasChanged();
+            chechEnemies();
+            base.StateHasChanged();
         }
         public int mapFunction(int positonX, int positionY)
         {
@@ -100,6 +147,7 @@ namespace Game.Web.Pages
                     block = null;
                     break;
             }
+            if(block != null)
             canWalkOnBlock = block != null && block.Type == Type.Grass || block.Type == Type.ChoppedTrees;
             return inRange && canWalkOnBlock;
         }
@@ -309,8 +357,8 @@ namespace Game.Web.Pages
                 }
                 int level = (int)Math.Sqrt(Math.Abs(mapWidth / 2 - positionX) + Math.Abs(mapHeight / 2 - positionY));
                 EnemyParent enemy = null;
-                //switch (rnd.Next(0, 5))
-                switch(0)
+                switch (rnd.Next(0, 5))
+                //switch(0)
                 {
                     case 0:
                         enemy = new EnemyVeigar(positionX, positionY, level);

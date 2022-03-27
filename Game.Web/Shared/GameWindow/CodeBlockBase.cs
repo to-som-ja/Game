@@ -31,6 +31,7 @@ namespace Game.Web.Pages
         public bool disabledStop = true;
         public bool stopped = false;
         public string textStop = "Stop";
+        public bool error = false;
         public int line { get; set; }
         protected string line1;
         protected string line2;
@@ -94,11 +95,12 @@ namespace Game.Web.Pages
                 foreach (var line in codeLines.text.Split('\n'))
                 {
                     string command = line.Split(' ')[0];
-                    if (inProcedure)
+                    if (inProcedure&&!error)
                     {
-                        if(command == "endproc")
+                        if (command == "endproc")
                         {
                             inProcedure = false;
+                            Procedures[procedureName].check();
                         }
                         else
                         {
@@ -106,24 +108,47 @@ namespace Game.Web.Pages
                         }
                     }
                     else
-                    {                       
+                    {
                         switch (command.ToLower())
                         {
                             case "go":
-                                Commands.Add(new Move(this, mapBase, getDir(line.Split(' ')[1]), line.Split(' ')[2]));
+                                if (line.Split(' ').Length >= 3)
+                                    Commands.Add(new Move(this, mapBase, getDir(line.Split(' ')[1]), line.Split(' ')[2]));
+                                else
+                                    addTextToConsole("Missing arguments", "red");
                                 break;
                             case "forloop":
-                                int count;
-                                string s = line.Split(' ')[1];
+                                int count = 0;
+                                string s = "";
+                                if (line.Split(' ').Length >= 2)
+                                {
+                                    s = line.Split(' ')[1];
+                                }
+                                else
+                                {
+                                    addTextToConsole("Missing arguments", "red");
+                                    error = true;
+                                }
                                 if (!Int32.TryParse(s, out count))
                                 {
-                                    count = integers[s];
+                                    if (integers.ContainsKey(s))
+                                        count = integers[s];
+                                    else
+                                    {
+                                        addTextToConsole("Wrong value", "red");
+                                        error = true;
+                                    }
                                 }
                                 forLoops.Push(new ForLoop(this, Commands.Count - 1, count));
                                 Commands.Add((ICommands)forLoops.Peek());
                                 break;
                             case "endfor":
-                                Commands.Add((ICommands)forLoops.Pop());
+                                if (forLoops.Count > 0)
+                                    Commands.Add((ICommands)forLoops.Pop());
+                                else
+                                {
+                                    addTextToConsole("Missing forloop", "red");
+                                }
                                 break;
                             case "chop":
                                 Commands.Add(new Chop(this, mapBase));
@@ -132,26 +157,69 @@ namespace Game.Web.Pages
                                 Commands.Add(new Mine(this, mapBase));
                                 break;
                             case "sleep":
-                                Commands.Add(new Sleep(this, int.Parse(line.Split(' ')[1])));
+                                if (line.Split(' ').Length >= 2)
+                                {
+                                    Commands.Add(new Sleep(this, int.Parse(line.Split(' ')[1])));
+                                }
+                                else
+                                {
+                                    addTextToConsole("Missing arguments", "red");
+                                }
                                 break;
                             case "int":
-                                integers.Add(line.Split(' ')[1], int.Parse(line.Split(' ')[2]));
+                                if (line.Split(' ').Length >= 3)
+                                {
+                                    int number = 0;
+                                    if (Int32.TryParse(line.Split(' ')[2], out number))
+                                    {
+                                        if (!integers.TryAdd(line.Split(' ')[1], number))
+                                        {
+                                            addTextToConsole("Variable already defined", "red");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        addTextToConsole("Wrong value", "red");
+                                    }
+                                }
+                                else                              
+                                    addTextToConsole("Missing arguments", "red");                                
                                 break;
                             case "inc":
-                                Commands.Add(new Int(this, true, line.Split(' ')[1]));
+                                if (line.Split(' ').Length >= 2)
+                                {
+                                    Commands.Add(new Int(this, true, line.Split(' ')[1]));
+                                }
+                                else
+                                    addTextToConsole("Missing arguments", "red");
                                 break;
                             case "dec":
-                                Commands.Add(new Int(this, false, line.Split(' ')[1]));
+                                if (line.Split(' ').Length >= 2)
+                                {
+                                    Commands.Add(new Int(this, false, line.Split(' ')[1]));
+                                }
+                                else
+                                    addTextToConsole("Missing arguments", "red");
                                 break;
                             case "set":
-                                Commands.Add(new Set(this, line.Split(' ')[1], int.Parse(line.Split(' ')[2])));
+                                if (line.Split(' ').Length >= 3)
+                                {
+                                        Commands.Add(new Set(this, line.Split(' ')[1], line.Split(' ')[2]));
+                                }
+                                else
+                                    addTextToConsole("Missing arguments", "red");                                
                                 break;
                             case "attack":
                                 Commands.Add(new Attack(this, mapBase));
                                 Commands.Add(new Wait(this, mapBase));
                                 break;
                             case "look":
-                                Commands.Add(new Look(this, mapBase, getDir(line.Split(' ')[1])));
+                                if (line.Split(' ').Length >= 2)
+                                {
+                                    Commands.Add(new Look(this, mapBase, getDir(line.Split(' ')[1])));
+                                }
+                                else
+                                    addTextToConsole("Missing arguments", "red");
                                 break;
                             case "stats":
                                 Commands.Add(new Stats(this, mapBase));
@@ -160,16 +228,63 @@ namespace Game.Web.Pages
                                 Commands.Add(new Inspect(this, mapBase));
                                 break;
                             case "craft":
-                                Commands.Add(new Craft(this, mapBase, line.Split(' ')[1]));
+                                if (line.Split(' ').Length >= 2)
+                                {
+                                    Commands.Add(new Craft(this, mapBase, line.Split(' ')[1]));
+                                }
+                                else
+                                    addTextToConsole("Missing arguments", "red");                                
                                 break;
                             case "startproc":
-                                procedureName = line.Split(' ')[1];
-                                inProcedure = true;
-                                Procedures.Add(procedureName,new Procedure(this, mapBase));
-                                break;                            
+                                if (line.Split(' ').Length >= 2)
+                                {
+                                    procedureName = line.Split(' ')[1];
+                                    inProcedure = true;
+                                    if (procedureName != "")
+                                    {
+                                        if (!Procedures.TryAdd(procedureName, new Procedure(this, mapBase)))
+                                        {
+                                            addTextToConsole("Procedure already exists", "red");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        addTextToConsole("Missing arguments", "red");
+                                        error = true;
+                                    }
+                                                                     
+                                }
+                                else
+                                {
+                                    addTextToConsole("Missing arguments", "red");
+                                    error=true;
+                                }                                                                
+                                break;
                             case "proc":
-                                string name = line.Split(' ')[1];
-                                    Commands.Add(Procedures[name]);
+                                if (line.Split(' ').Length >= 2)
+                                {
+                                    string name = line.Split(' ')[1];
+                                    if(Procedures.ContainsKey(name))
+                                        Commands.Add(Procedures[name]);
+                                    else
+                                        addTextToConsole("Procedure not found", "red");
+                                }
+                                else
+                                    addTextToConsole("Missing arguments", "red");
+                                break;
+                            case "procremove":
+                                if (line.Split(' ').Length >= 2)
+                                       Commands.Add(new ProcedureRemove(this, line.Split(' ')[1]));
+                                else
+                                    addTextToConsole("Missing arguments", "red");
+                                break;
+                            case "proclist":                                
+                                   Commands.Add(new ProcedureList(this));
+                                break;
+                            case "":
+                                break;
+                            default:
+                                addTextToConsole("Command not found", "red");
                                 break;
                         }
                     }
@@ -184,7 +299,16 @@ namespace Game.Web.Pages
             }
             else
             {
-                await execute();
+                if (error)
+                {
+                    //addTextToConsole("ERROR", "red");
+                    Commands.Clear();
+                    forLoops.Clear();
+                    integers.Clear();
+                    error = false;
+                }
+                else
+                    await execute();
             }
             disabledSubmit = false;
             disabledStop = true;
@@ -195,7 +319,7 @@ namespace Game.Web.Pages
             textStop = "Stopped";
             addTextToConsole("Stopped", "black");
         }
-        public Direction getDir(string stringDir)
+        public Direction? getDir(string stringDir)
         {
             switch (stringDir.ToLower())
             {
@@ -207,8 +331,11 @@ namespace Game.Web.Pages
                     return Direction.West;
                 case "right":
                     return Direction.East;
+                default:
+                    addTextToConsole("Wrong direction", "red");
+                    break;
             }
-            return Direction.North;
+            return null;
         }
         private async Task execute()
         {

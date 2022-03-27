@@ -1,5 +1,6 @@
 
 using Game.Web.Pages;
+using Game.Web.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +31,7 @@ namespace Game.Web
 		{
 			services.AddRazorPages();
 			services.AddServerSideBlazor();
+			services.AddScoped<BrowserService>();
 			services.AddTransient<MapBase>();
 			services.AddScoped<DialogService>();
 			services.AddScoped<NotificationService>();

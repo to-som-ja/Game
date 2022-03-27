@@ -8,7 +8,7 @@ namespace Game.Web.Shared.GameWindow.Commands
     {
         public MapBase map;
         public CodeBlockBase codeBlock;
-        int staminaUse = 15;
+        int staminaUse = 20;
         public Mine(CodeBlockBase codeBlock, MapBase map)
         {
             this.map = map;

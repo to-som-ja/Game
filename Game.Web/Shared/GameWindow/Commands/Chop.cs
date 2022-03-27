@@ -8,7 +8,7 @@ namespace Game.Web.Shared.GameWindow.Commands
     {
         public MapBase map;
         public CodeBlockBase codeBlock;
-        int staminaUse = 20;
+        int staminaUse = 15;
         public Chop(CodeBlockBase codeBlock, MapBase map)
         {
             this.map = map;

@@ -2,12 +2,22 @@
 @using Game.Web.Pages
 @using Game.Web.Shared
 @using Game.Web.Shared.GameWindow
-
+@inject IJSRuntime JS
+@inject BrowserService Browser
 @inherits GameWindowBase
 
 <Map @ref="map"></Map>
 <CodeBlock @ref="codeBlock" mapBase="@map" Combat="@combat"></CodeBlock>
 <Inventory player="@player"></Inventory>
-<Settings codeBlock="@codeBlock" map="@map"></Settings>
+@*<Settings codeBlock="@codeBlock" map="@map"></Settings>*@
 <Info codeBlock="@codeBlock"></Info>
 <Combat @ref="combat" codeBlock="@codeBlock"></Combat>
+
+@code {
+    protected override void OnAfterRender(bool firstRender)
+        {   
+            StateHasChanged();
+            player = map.player;
+            Browser.Init(JS);
+        }
+}
