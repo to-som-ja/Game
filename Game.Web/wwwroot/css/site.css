@@ -3,7 +3,7 @@
 body {
     background: #005AA7; /* fallback for old browsers */
     background: -webkit-linear-gradient(to left, #FFFDE4, #005AA7); /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to left, #FFFDE4, #005AA7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to left, #fcfcfc, #3b94e0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 .game .blocks {
@@ -273,101 +273,90 @@ body {
     width: 100%;
     height: 100px;
     background: #005AA7; /* fallback for old browsers */
-    background: -webkit-linear-gradient(to left, #FFFDE4, #005AA7); /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to left, #FFFDE4, #005AA7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-}
-.login {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-}
-.register {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
+    background: -webkit-linear-gradient(to left, #fcfcfc, #3b94e0); /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #fcfcfc, #3b94e0); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
-    .index form {
-        border: 5px solid #f1f1f1;
-        background-color:azure;
-    }
-
-.index input[type=text], input[type=password] {
+.loginButtons {
     width: 100%;
-    padding: 16px 8px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
+    height: 2rem;
+    background-color: #ffffff70;
 }
 
-.index button {
-    background-color: #8ebf42;
-    color: white;
-    padding: 14px 0;
-    margin: 10px 0;
-    border: none;
-    cursor: grabbing;
-    width: 100%;
-}
-
-.index h1 {
-    text-align: center;
-    fone-size: 18;
-}
-
-.index button:hover {
-    opacity: 0.8;
-}
-
-    .index .formcontainer {
-        text-align: left;
-        margin: 24px 50px 12px;
+    .loginButtons button {
+        width: 100px;
+        height: auto;
+        background-color: #F0F8FF;
+        position: absolute;
+        right: 0px;
+        margin-right: 3%
     }
 
-    .index .container {
-        padding: 16px 0;
-        text-align: left;
-    }
-
-.index span.psw {
-    float: right;
-    padding-top: 0;
-    padding-right: 15px;
-}
-.mainBtn {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-    width:20%;
-}
-    .mainBtn button {
-        background-color: #8ebf42;
-        color: white;
-        padding: 14px 0;
-        margin: 10px 0;
-        border: none;
-        cursor: grabbing;
-    }
-        .mainBtn button:hover {
-            background-color: #8ebf42;
-            color: white;
-            padding: 14px 0;
-            margin: 10px 0;
-            border: none;
-            opacity: 0.8;
+        .loginButtons button:hover {
+            background-color: #b7c8d7;
         }
-
-/* Change styles for span on extra small screens */
-@media screen and (max-width: 300px) {
-    .index span.psw {
-        display: block;
-        float: none;
+.squares {
+    position: absolute;
+    left: 50%;
+    top: 20%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+.square {
+    width: 15rem;
+    height: 15rem;
+    float: left;
+    color: white;
+    font-weight: 1000;
+    font-family: 'Open sans', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: xx-large;
+}
+    .square a {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
     }
-    
+.square1 {
+    background-color: #FF8C99;
+}
+.square2 {
+    background-color: #C3E800;
+}
+.square3 {
+    background-color: #FFFF21;
+}
+.square4 {
+    background-color: #DE91F7;
+}
+.playButton {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+    .playButton button {
+        width: 20rem;
+        height: 10rem;
+        background-color: #18D95B;
+        color: white;
+        font-weight: 1000;
+        font-family: 'Open sans', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: x-large;
+        border: unset;
+        outline: none;
+    }
+        .playButton button:hover {
+            border-radius: 12px;
+            background-color: #2eff77;
+            font-size: xx-large;
+        }
+*:focus {
+    outline: 0 !important;
+}

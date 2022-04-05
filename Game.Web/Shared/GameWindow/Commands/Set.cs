@@ -67,14 +67,17 @@ namespace Game.Web.Shared.GameWindow.Commands
                         }
                         else
                         {
-                            codeBlock.addTextToConsole("Wrong value", "red");
+                            if (codeBlock.integers.ContainsKey(value))
+                            {
+                                procedure.integers[name] = codeBlock.integers[value];
+                            }
+                            else
+                                codeBlock.addTextToConsole("Wrong value", "red");
                         }
                     }
                 }
                 else
-                {
                     codeBlock.addTextToConsole("Variable not found", "red");
-                }
             }            
             return Task.CompletedTask;
         }

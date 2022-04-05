@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Syncfusion.Blazor;
 
 namespace Game.Web
 {
@@ -17,6 +16,7 @@ namespace Game.Web
 		public static void Main(string[] args)
 		{
 			CreateHostBuilder(args).Build().Run();
+
 		}
 
 		public static IHostBuilder CreateHostBuilder(string[] args) =>

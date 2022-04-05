@@ -15,6 +15,7 @@ namespace Game.Web.Shared.GameWindow.Commands
         public int line = 0;
         public Stack forLoops=new Stack();
         bool error;
+        public int parameters= 0;
 
         public Procedure(CodeBlockBase codeBlock, MapBase map)
         {
@@ -91,6 +92,10 @@ namespace Game.Web.Shared.GameWindow.Commands
                             if (!integers.TryAdd(line.Split(' ')[1], number))
                             {
                                 codeBlock.addTextToConsole("Variable already defined", "red");
+                            }
+                            else
+                            {
+                                commands.Add(new Set(codeBlock, this, line.Split(' ')[1], line.Split(' ')[2]));
                             }
                         }
                         else
@@ -194,6 +199,7 @@ namespace Game.Web.Shared.GameWindow.Commands
                 }
             }
             line = 0;
+            error = false;
         }
     }
 }

@@ -19,13 +19,25 @@
 		<PackageReference Include="Accord.Math" Version="3.8.2-alpha" />
 		<PackageReference Include="AVX2PerlinNoise" Version="1.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.2.0-preview3.20168.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0-preview.2.22153.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.2">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.2" />
 		<PackageReference Include="Radzen.Blazor" Version="3.16.3" />
-		<PackageReference Include="Syncfusion.Blazor" Version="19.4.0.55" />
-		<PackageReference Include="Syncfusion.Blazor.ProgressBar" Version="19.4.0.56" />
 	</ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Game.Models\Game.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Shared\Index\" />
   </ItemGroup>
 
 </Project>

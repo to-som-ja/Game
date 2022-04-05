@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Game.Web.Pages
 {
@@ -22,6 +23,7 @@ namespace Game.Web.Pages
         public Dictionary<string, Procedure> Procedures = new Dictionary<string, Procedure>();
         protected Code codeLines;
         public Stack forLoops;
+        public Stack ifs;
         //public List<Dictionary<int,string>> integers;
         public Dictionary<string, int> integers;
         public string visibleSettings = "hidden";
@@ -46,6 +48,7 @@ namespace Game.Web.Pages
         {
             codeLines = new Code();
             forLoops = new Stack();
+            ifs = new Stack();
             integers = new Dictionary<string, int>();
             Stamina();
         }
@@ -239,12 +242,23 @@ namespace Game.Web.Pages
                                 if (line.Split(' ').Length >= 2)
                                 {
                                     procedureName = line.Split(' ')[1];
-                                    inProcedure = true;
+                                    inProcedure = true;                                                                  
                                     if (procedureName != "")
                                     {
                                         if (!Procedures.TryAdd(procedureName, new Procedure(this, mapBase)))
                                         {
                                             addTextToConsole("Procedure already exists", "red");
+                                        }
+                                        else
+                                        {
+                                            if (line.Split(' ').Length > 2)
+                                            {
+                                                Procedures[procedureName].parameters = line.Split(' ').Length - 2;
+                                                for (int i = 2; i < line.Split(' ').Length; i++)
+                                                {
+                                                    Procedures[procedureName].integers.TryAdd(line.Split(' ')[i], 0);
+                                                }
+                                            }
                                         }
                                     }
                                     else
@@ -264,8 +278,20 @@ namespace Game.Web.Pages
                                 if (line.Split(' ').Length >= 2)
                                 {
                                     string name = line.Split(' ')[1];
-                                    if(Procedures.ContainsKey(name))
-                                        Commands.Add(Procedures[name]);
+                                    if (Procedures.ContainsKey(name))
+                                    {
+                                        if(Procedures[name].parameters == line.Split(' ').Length - 2)
+                                        {
+                                            Commands.Add(Procedures[name]);
+                                            for (int i = 0; i < Procedures[name].parameters; i++)
+                                            {
+                                                string intName = Procedures[name].integers.ElementAt(i).Key;
+                                                Commands.Insert(Commands.Count-1,new Set(this, Procedures[name], intName, line.Split(' ')[i + 2]));
+                                            }
+                                        }
+                                        else
+                                            addTextToConsole("Missing arguments", "red");
+                                    }                                        
                                     else
                                         addTextToConsole("Procedure not found", "red");
                                 }
@@ -281,6 +307,14 @@ namespace Game.Web.Pages
                             case "proclist":                                
                                    Commands.Add(new ProcedureList(this));
                                 break;
+                            case "if":
+                                ifs.Push(new If(this,line));
+                                Commands.Add((ICommands)ifs.Peek());
+                                break;
+                            case "endif":
+                                ((If)ifs.Peek()).endLine=Commands.Count-1;
+                                ifs.Pop();
+                                break;
                             case "":
                                 break;
                             default:
@@ -290,7 +324,7 @@ namespace Game.Web.Pages
                     }
                 }
             }
-            if (forLoops.Count != 0)
+            if (forLoops.Count != 0 || ifs.Count != 0)
             {
                 addTextToConsole("Missing endfor", "red");
                 Commands.Clear();

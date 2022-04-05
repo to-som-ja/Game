@@ -14,6 +14,13 @@ namespace Game.Web.Pages
     
     public class GameWindowBase : ComponentBase
     {
+        [Parameter]
+        public int seed { get; set; }
+        [Parameter]
+        public int dificulty { get; set; }
+        [Parameter]
+        public int gameId { get; set; }
+
         protected MapBase map;
         protected CodeBlockBase codeBlock;
         protected Player player;

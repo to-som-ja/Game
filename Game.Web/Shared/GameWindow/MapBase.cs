@@ -18,6 +18,8 @@ namespace Game.Web.Pages
     {   
         [Inject]
         public IJSRuntime JS {get; set;}
+        [Parameter]
+        public int seed { get; set; }
 
         public List<Block> mapGrid = new List<Block>();
         public Player player;
@@ -30,26 +32,30 @@ namespace Game.Web.Pages
         public int renderHeightStart;
         public int renderHeightEnd;
         private Random rnd;
-        private double seed;
         public int top;
         public int left;
         public PerlinNoise noise = new PerlinNoise();
         public float zoom = 9.0f;
-        public int xOffset; //<- +>
+        public int xOffset ; //<- +>
         public int yOffset; //v- +^
         public event PropertyChangedEventHandler PropertyChanged;
         public List<IEnemy> enemies = new List<IEnemy>();
         public int spawnRate = 50;
 
 
-        protected override void OnInitialized()
-        {   
-            
-            rnd = new Random(2);
+        protected async override void OnInitialized()
+        {
+            if (seed == 0)
+            {
+                rnd = new Random();
+            }
+            else
+            {
+                rnd = new Random(seed);
+            }          
             player = new Player(mapWidth / 2, mapHeight / 2, "Images/player.png");
             player.relativePositionX = renderWidth / 2;
             player.relativePositionY = renderHeight / 2;
-            seed = rnd.NextDouble();
             xOffset = rnd.Next(1, 10000) - 10000;
             yOffset = rnd.Next(1, 10000) - 10000;
             top = player.relativePositionY * 40 + 3;

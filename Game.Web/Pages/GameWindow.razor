@@ -1,4 +1,6 @@
 ﻿@page "/game"
+@page "/game/{seed:int}/{dificulty:int}"
+@page "/game/{gameId:int}"
 @using Game.Web.Pages
 @using Game.Web.Shared
 @using Game.Web.Shared.GameWindow
@@ -6,7 +8,7 @@
 @inject BrowserService Browser
 @inherits GameWindowBase
 <div class="game">
-    <Map @ref="map"></Map>
+    <Map @ref="map" seed="@seed"></Map>
 <CodeBlock @ref="codeBlock" mapBase="@map" Combat="@combat"></CodeBlock>
 <Inventory player="@player"></Inventory>
 @*<Settings codeBlock="@codeBlock" map="@map"></Settings>*@
@@ -16,6 +18,7 @@
 
 
 @code {
+    
     protected override void OnAfterRender(bool firstRender)
         {   
             StateHasChanged();

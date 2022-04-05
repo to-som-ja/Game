@@ -27,7 +27,10 @@ namespace Game.Web.Shared.GameWindow
 
             CommandsNameList.Add("forloop \"value\"");
             CommandsInfoList.Add((MarkupString)$"code between \"forloop\" and \"endfor\" will repeat \"value\" times");
-            
+
+            CommandsNameList.Add("if \"condition\"");
+            CommandsInfoList.Add((MarkupString)$"code between \"if\" and \"endif\" will execute only if \"condition\" is true<br />\"condition\" can be: variable,\"true/false\", \"block\" + type of block");
+
             CommandsNameList.Add("chop");
             CommandsInfoList.Add((MarkupString)$"trees in front of the player will be chopped <br />uses 15 stamina");
 
