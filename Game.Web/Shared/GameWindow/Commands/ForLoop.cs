@@ -1,4 +1,5 @@
 ﻿using Game.Web.Pages;
+using System;
 using System.Threading.Tasks;
 
 namespace Game.Web.Shared.GameWindow.Commands
@@ -7,30 +8,56 @@ namespace Game.Web.Shared.GameWindow.Commands
     {
         public CodeBlockBase codeBlock;
         public int startLine;
-        public int count;
+        public string s;
         public int maxCount;
+        int count = 0;
         public bool start;
         Procedure procedure;
 
-        public ForLoop(CodeBlockBase codeBlock, int startLine,int count)
+        public ForLoop(CodeBlockBase codeBlock, int startLine,string count)
         {
             this.codeBlock = codeBlock;
             this.startLine = startLine;
-            this.count = count;
-            this.maxCount = count;
+            this.s = count;
+            this.maxCount = 0;
             start = true;            
         }
-        public ForLoop(CodeBlockBase codeBlock,Procedure procedure, int startLine, int count)
+        public ForLoop(CodeBlockBase codeBlock,Procedure procedure, int startLine, string count)
         {
             this.codeBlock = codeBlock;
             this.startLine = startLine;
-            this.count = count;
-            this.maxCount = count;
+            this.s= count;
+            this.maxCount = 0;
             start = true;
             this.procedure = procedure;
         }
         public Task execute()
         {
+            if(maxCount == 0)
+            {
+                if (!Int32.TryParse(s, out count))
+                {
+                    if (procedure==null)
+                    {
+                        if (codeBlock.integers.ContainsKey(s))
+                            count = codeBlock.integers[s];
+                        else
+                        {
+                            codeBlock.addTextToConsole("Wrong value", "red");
+                        }
+                    }
+                    else
+                    {
+                        if (procedure.integers.ContainsKey(s))
+                            count = procedure.integers[s];
+                        else
+                        {
+                            codeBlock.addTextToConsole("Wrong value", "red");
+                        }
+                    }
+                    maxCount = count;
+                }
+            }
             if (start)
             {
                 count--;

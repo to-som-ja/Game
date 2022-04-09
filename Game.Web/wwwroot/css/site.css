@@ -105,7 +105,7 @@ body {
     position: absolute;
 }
 
-.game .settings {
+.settings {
     width: 20%;
     height: auto;
     background-color: #646464cf;
@@ -184,7 +184,7 @@ body {
     margin-bottom: 0;
 }
 
-.game .info {
+.info {
     max-height: 500px;
     overflow-y: scroll
 }
@@ -360,3 +360,54 @@ body {
 *:focus {
     outline: 0 !important;
 }
+.smallPlayButton {
+    width: 8rem;
+    height: 5rem;
+    background-color: #18D95B;
+    color: white;
+    font-weight: 800;
+    font-family: 'Open sans', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: large;
+    border: unset;
+    outline: none;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    margin: auto;
+}
+
+.smallPlayButton:hover {
+    border-radius: 8px;
+    background-color: #2eff77;
+    font-size: large;
+}
+.gameMenu {
+    width: 30%;
+    height: auto;
+    background-color: #56BBF1cf;
+    z-index: 2;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    border-style: solid;
+    border-width: 3px;
+    border-color: #3e8db7;
+}
+.gameBlock {
+    max-height: 40rem;
+    overflow-y: scroll
+}
+.box {
+    border-style: solid;
+    border-width: 3px;
+    border-color: #3e8db7;
+    padding:10px;
+}
+    .box h1 {
+        text-align: center;
+    }

@@ -1,17 +1,20 @@
 ﻿@page
 @model Game.Web.Areas.Identity.Pages.Account.RegisterModel
 @{
-    ViewData["Title"] = "log in";
+    ViewData["Title"] = "REGISTER";
 }
-<h1>@ViewData["Title"]</h1>
-<div class="row" style="margin:50px">
+<div class="row" style="position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);">
     <div class="col-md-4">
         <section>
             <form id="account" method="post">
-                <h2>dajaky text</h2>
+                <h1 style="font-weight: 1000;
+    font-family: 'Open sans', sans-serif;">@ViewData["Title"]</h1>
                 <hr />
                 <div class="formcontainer">
-                    <hr />
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-floating" style="margin:10px">
                         <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
@@ -23,8 +26,14 @@
                             <label asp-for="Input.Password" class="form-label"></label>
                             <span asp-validation-for ="Input.Password" class="text-danger"></span>
                     </div>
+                    <div class="form-floating" style="margin:10px">
+                        <input asp-for="Input.Password2" class="form-control" autocomplete="current-password" aria-required="true" />
+                            <label asp-for="Input.Password2" class="form-label"></label>
+                            <span asp-validation-for ="Input.Password2" class="text-danger"></span>
+                    </div>
                     <div style="margin:10px">
                         <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+                        <button type="submit" asp-page="./Login">Already have account?</button>
                     </div>                    
                 </div>
             </form>

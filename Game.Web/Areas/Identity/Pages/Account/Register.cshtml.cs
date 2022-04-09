@@ -31,13 +31,17 @@ namespace Game.Web.Areas.Identity.Pages.Account
             ReturnUrl = Url.Content("~/");
             if (ModelState.IsValid)
             {
-                var identity = new IdentityUser { UserName = Input.Email, Email = Input.Email };
-                var result  = await _userManager.CreateAsync(identity,Input.Password);
-                if (result.Succeeded)
+                if (Input.Password == Input.Password2)
                 {
-                    await _signInManager.SignInAsync(identity, isPersistent:false);
-                    return LocalRedirect(ReturnUrl);
+                    var identity = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                    var result = await _userManager.CreateAsync(identity, Input.Password);
+                    if (result.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(identity, isPersistent: false);
+                        return LocalRedirect(ReturnUrl);
+                    }
                 }
+                
             }
             return Page();
         }
@@ -51,6 +55,9 @@ namespace Game.Web.Areas.Identity.Pages.Account
             [Required]
             [DataType(DataType.Password)]
             public string Password { get; set; }
+            [Required]
+            [DataType(DataType.Password)]
+            public string Password2 { get; set; }
         }
     }
 }

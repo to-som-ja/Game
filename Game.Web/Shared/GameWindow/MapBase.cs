@@ -1,15 +1,19 @@
 ﻿using Accord.Math;
 using AVXPerlinNoise;
+using Dapper;
 using Game.Models;
+using Game.Web.Models;
 using Game.Web.Shared.GameWindow.Enemies;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Threading.Tasks;
 using Type = Game.Models.Type;
-
 
 namespace Game.Web.Pages
 {
@@ -18,8 +22,16 @@ namespace Game.Web.Pages
     {   
         [Inject]
         public IJSRuntime JS {get; set;}
+        [Inject]
+        public IDataAcces _data { get; set; }
+        [Inject]
+        public IConfiguration _config { get; set; }
         [Parameter]
         public int seed { get; set; }
+        [Parameter]
+        public int gameId { get; set; }
+        [Parameter]
+        public int dificulty { get; set; }
 
         public List<Block> mapGrid = new List<Block>();
         public Player player;
@@ -45,35 +57,75 @@ namespace Game.Web.Pages
 
         protected async override void OnInitialized()
         {
-            if (seed == 0)
+            
+            if (gameId!=0)
             {
-                rnd = new Random();
+                GameModel game = null;
+                using (IDbConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
+                {
+                    string sql = $"select * from Games WHERE Id = (@id);";
+                    connection.Open();
+                    var rows = connection.Query<GameModel>(sql, new {id = gameId });
+                    game= rows.AsList()[0];
+                }
+                if (game.Seed == 0)
+                {
+                    Random seedGenerator = new Random();
+                    game.Seed = seedGenerator.Next();
+                }
+                if (game.PositionX == 0)
+                {
+                    player = new Player(mapWidth / 2, mapHeight / 2, "Images/player.png");
+                }
+                else
+                {
+                    player = new Player(game.PositionX, game.PositionY, "Images/player.png");
+                    player.level = game.Level;
+                    player.experience = game.Experience;
+                }
+                rnd = new Random(game.Seed);
+                seed = game.Seed;
+                save();
             }
             else
             {
-                rnd = new Random(seed);
-            }          
-            player = new Player(mapWidth / 2, mapHeight / 2, "Images/player.png");
-            player.relativePositionX = renderWidth / 2;
-            player.relativePositionY = renderHeight / 2;
+                if (seed == 0)
+                {
+                    rnd = new Random();
+                }
+                else
+                {
+                    rnd = new Random(seed);
+                }
+                player = new Player(mapWidth / 2, mapHeight / 2, "Images/player.png");
+            }
             xOffset = rnd.Next(1, 10000) - 10000;
             yOffset = rnd.Next(1, 10000) - 10000;
-            top = player.relativePositionY * 40 + 3;
-            left = player.relativePositionX * 40 + 3;
             generateMap();
             while (mapGrid[mapFunction(player.positionX, player.positionY)].Type != Type.Grass)
             {
                 player.positionX++;
             }
-            renderHeightStart = player.positionY - renderHeight / 2;
-            renderWidthStart = player.positionX - renderWidth / 2;
-            renderHeightEnd = player.positionY + renderHeight / 2;
-            renderWidthEnd = player.positionX + renderWidth / 2;
             PropertyChanged += (o, e) => StateHasChanged();
             StateHasChanged();
-
         }
-
+        public bool save()
+        {
+            if (gameId != 0)
+            {
+                using (IDbConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
+                {
+                    string sql = $"UPDATE Games SET Seed = (@seed_), PositionX = (@positionX), PositionY = (@positionY), Level=(@level) , Experience = (@experience)  WHERE Id = (@id) ";
+                    connection.Open();
+                    connection.Execute(sql, new { seed_ = seed, positionX = player.positionX, positionY = player.positionY, level = player.level, experience = player.experience, id = gameId });
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }           
+        }
         public async Task  setDimensions()
         {
 
@@ -331,7 +383,6 @@ namespace Game.Web.Pages
                 int positionX = 0;
                 Block block;
                 List<Block> candidatesForSpawn = new List<Block>();
-
                 if (row)
                 {
                     for (int i = renderHeightStart; i < renderHeightEnd; i++)
@@ -344,7 +395,8 @@ namespace Game.Web.Pages
                     }
 
                     positionX = position;
-                    positionY = candidatesForSpawn[rnd.Next(0, candidatesForSpawn.Count)].positionY;
+                    if (candidatesForSpawn.Count != 0)
+                        positionY = candidatesForSpawn[rnd.Next(0, candidatesForSpawn.Count)].positionY;
                 }
                 else
                 {
@@ -357,9 +409,8 @@ namespace Game.Web.Pages
                         }
                     }
                     positionY = position;
-                    int random = rnd.Next(0, candidatesForSpawn.Count);
-                    if (candidatesForSpawn.Count > random)
-                        positionX = candidatesForSpawn[random].positionX;
+                    if (candidatesForSpawn.Count != 0)
+                        positionX = candidatesForSpawn[rnd.Next(0, candidatesForSpawn.Count)].positionX;
                 }
                 int level = (int)Math.Sqrt(Math.Abs(mapWidth / 2 - positionX) + Math.Abs(mapHeight / 2 - positionY));
                 EnemyParent enemy = null;

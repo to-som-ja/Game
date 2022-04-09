@@ -132,17 +132,7 @@ namespace Game.Web.Pages
                                     addTextToConsole("Missing arguments", "red");
                                     error = true;
                                 }
-                                if (!Int32.TryParse(s, out count))
-                                {
-                                    if (integers.ContainsKey(s))
-                                        count = integers[s];
-                                    else
-                                    {
-                                        addTextToConsole("Wrong value", "red");
-                                        error = true;
-                                    }
-                                }
-                                forLoops.Push(new ForLoop(this, Commands.Count - 1, count));
+                                forLoops.Push(new ForLoop(this, Commands.Count - 1, s));
                                 Commands.Add((ICommands)forLoops.Peek());
                                 break;
                             case "endfor":
@@ -306,6 +296,9 @@ namespace Game.Web.Pages
                                 break;
                             case "proclist":                                
                                    Commands.Add(new ProcedureList(this));
+                                break;
+                            case "save":
+                                Commands.Add(new Save(this,mapBase));
                                 break;
                             case "if":
                                 ifs.Push(new If(this,line));

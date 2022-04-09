@@ -14,7 +14,6 @@ namespace Game.Web.Areas.Identity.Pages.Account
             _signInManager = signInManager;
         }
 
-
         [BindProperty]
         public InputModel Input { get; set; }
         public string ReturnUrl { get; set; }

@@ -1,5 +1,6 @@
 
 //using Fluent.Infrastructure.FluentModel;
+using Game.Models;
 using Game.Web.Data;
 using Game.Web.Pages;
 using Game.Web.Shared;
@@ -51,7 +52,7 @@ namespace Game.Web
 
 			services.AddRazorPages();
 			services.AddServerSideBlazor();
-           
+			services.AddSingleton<IDataAcces, DataAcces>();
 			services.AddScoped<BrowserService>();
 			services.AddTransient<MapBase>();
 			services.AddScoped<DialogService>();

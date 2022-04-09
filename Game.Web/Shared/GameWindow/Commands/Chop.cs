@@ -19,16 +19,16 @@ namespace Game.Web.Shared.GameWindow.Commands
             Block block;
             switch (map.player.direction)
             {
-                case Models.Direction.North:
+                case Direction.North:
                     block = map.mapGrid[map.mapFunction(map.player.positionX,map.player.positionY-1)];
                     break;
-                case Models.Direction.South:
+                case Direction.South:
                     block = map.mapGrid[map.mapFunction(map.player.positionX, map.player.positionY + 1)];
                     break;
-                case Models.Direction.West:
+                case Direction.West:
                     block = map.mapGrid[map.mapFunction(map.player.positionX-1, map.player.positionY)];
                     break;
-                case Models.Direction.East:
+                case Direction.East:
                     block = map.mapGrid[map.mapFunction(map.player.positionX+1, map.player.positionY)];
                     break;
                     default:

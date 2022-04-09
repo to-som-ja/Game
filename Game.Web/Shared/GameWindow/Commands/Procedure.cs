@@ -46,17 +46,7 @@ namespace Game.Web.Shared.GameWindow.Commands
                         codeBlock.addTextToConsole("Missing arguments", "red");
                         error = true;
                     }
-                    if (!Int32.TryParse(s, out count))
-                    {
-                        if (integers.ContainsKey(s))
-                            count = integers[s];
-                        else
-                        {
-                            codeBlock.addTextToConsole("Wrong value", "red");
-                            error = true;
-                        }
-                    }
-                    forLoops.Push(new ForLoop(codeBlock, this, commands.Count - 1, count));
+                    forLoops.Push(new ForLoop(codeBlock, this, commands.Count - 1, s));
                     commands.Add((ICommands)forLoops.Peek());
                     break;
                 case "endfor":

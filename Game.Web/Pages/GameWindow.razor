@@ -8,7 +8,7 @@
 @inject BrowserService Browser
 @inherits GameWindowBase
 <div class="game">
-    <Map @ref="map" seed="@seed"></Map>
+    <Map @ref="map" seed="@seed" gameId="@gameId" dificulty="@dificulty"></Map>
 <CodeBlock @ref="codeBlock" mapBase="@map" Combat="@combat"></CodeBlock>
 <Inventory player="@player"></Inventory>
 @*<Settings codeBlock="@codeBlock" map="@map"></Settings>*@

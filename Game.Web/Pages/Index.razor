@@ -1,14 +1,49 @@
 ﻿@page "/"
+@using Dapper
+@using Game.Web.Models
+@using Game.Models
 @using Game.Web.Shared
+@using Microsoft.AspNetCore.Identity;
+@using Microsoft.Data.SqlClient
+@using Microsoft.Extensions.Configuration
+@using System.Data
 @inherits IndexBase
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider authStateProvider
+@inject UserManager<IdentityUser> UserManager
+@inject IDataAcces _data
+@inject IConfiguration _config
+
 <div class="index">
     <AuthorizeView>
         <Authorized>
             <div class="loginButtons">
                 <button @onclick="logOutPage"> Logout </button>
             </div>
-            <h1>TOTO JE DACO KED SI PRIHALSENY</h1>
+            <div class="gameMenu">
+                <div class="box">
+                    <h1>Player: @authStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name</h1>
+                </div>
+                <div class="gameBlock">
+                    @if (games != null) foreach (GameModel game in games)
+                        {
+                            <div class="box">
+                                <h1>Game name: @game.Name</h1>
+                                <button class="smallPlayButton" @onclick="() => playSavedGame(game.Id)">PLAY</button>
+                            </div>
+                        }
+                    <div class="box">
+                        <p>Name</p>
+                        <input type="text" @bind-value="@gameName" @bind-value:event="oninput">
+                        <p>Seed</p>
+                        <input type="number" @bind-value="@seed" @bind-value:event="oninput">
+                        <p>Dificulty</p>
+                        <input type="number" @bind-value="@dificulty" @bind-value:event="oninput">
+                        <button class="smallPlayButton" @onclick="newGame">NEW GAME</button>
+                    </div>
+                </div>
+            </div>
+
         </Authorized>
         <NotAuthorized>
             <div class="loginButtons">
@@ -39,10 +74,10 @@
 
             <div class="gameSettings" style="visibility:@showMiddleSettings">
                 <div class="squares">
-                        <p>Seed</p>
-                        <input type="number" @bind-value="@seed" @bind-value:event="oninput">
-                        <p>Dificulty</p>
-                        <input type="number" @bind-value="@dificulty" @bind-value:event="oninput">
+                    <p>Seed</p>
+                    <input type="number" @bind-value="@seed" @bind-value:event="oninput">
+                    <p>Dificulty</p>
+                    <input type="number" @bind-value="@dificulty" @bind-value:event="oninput">
                 </div>
                 <div class="playButton">
                     <button @onclick="play">QUICK PLAY</button>
@@ -55,24 +90,91 @@
 
     string showMiddlePlay = "visible";
     string showMiddleSettings = "hidden";
-    int seed=0;
-    int dificulty=0;
+    int seed = 0;
+    int dificulty = 0;
+    string gameName = "";
+    string userId = "";
+    List<GameModel> games = null;
+    int gameID;
+    public async void newGame()
+    {
+        using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
+        {
+            string sql = $"insert into Games (Name, PlayerId, Seed, Dificulty) values (@name, @user, @seed, @dificulty);";
+            using (SqlCommand command = new SqlCommand(sql, connection))
+            {
+                command.Parameters.Add("@name", SqlDbType.NVarChar).Value = gameName;
+                command.Parameters.Add("@user", SqlDbType.NVarChar).Value = userId;
+                command.Parameters.Add("@seed", SqlDbType.Int).Value = seed;
+                command.Parameters.Add("@dificulty", SqlDbType.Int).Value = dificulty;
+
+                connection.Open();
+                var result = command.ExecuteNonQuery();
+            }
+            sql = "select Id from Games WHERE id=(SELECT max(id) FROM Games);";
+            using (SqlCommand command = new SqlCommand(sql, connection))
+            {
+                SqlDataReader rd = command.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    rd.Read(); // read first row
+                    gameID = rd.GetInt32(0);
+                }
+            }
+            connection.Close();
+        }
+        playSavedGame();
+    }
+
+    public void playSavedGame()
+    {
+        string s = $"/game/{gameID}";
+        NavigationManager.NavigateTo(s, true);
+    }
+    public void playSavedGame(int gameid)
+    {
+        string s = $"/game/{gameid}";
+        NavigationManager.NavigateTo(s, true);
+    }
+
     public void showGameSettings()
     {
         showMiddlePlay = "hidden";
         showMiddleSettings = "visible";
     }
+
     public void loginPage()
     {
         NavigationManager.NavigateTo("/Identity/Account/Login", true);
     }
+
     public void play()
     {
         string s = $"/game/{seed}/{dificulty}";
         NavigationManager.NavigateTo(s, true);
     }
+
     public void logOutPage()
     {
         NavigationManager.NavigateTo("/Identity/Account/Logout", true);
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await getUserId();
+        if (userId != "")
+        {
+            string sql = "select * from Games where PlayerId = (@user);";
+            games = await _data.LoadData<GameModel, dynamic>(sql, new { user = userId }, _config.GetConnectionString("Default"));
+        }
+
+    }
+    async Task<string> getUserId()
+    {
+        var user = (await authStateProvider.GetAuthenticationStateAsync()).User;
+        var UserId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        this.userId = UserId;
+        return UserId;
+    }
+
 }
