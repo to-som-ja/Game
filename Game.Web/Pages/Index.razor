@@ -7,6 +7,7 @@
 @using Microsoft.Data.SqlClient
 @using Microsoft.Extensions.Configuration
 @using System.Data
+@using System.ComponentModel
 @inherits IndexBase
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider authStateProvider
@@ -29,7 +30,10 @@
                         {
                             <div class="box">
                                 <h1>Game name: @game.Name</h1>
-                                <button class="smallPlayButton" @onclick="() => playSavedGame(game.Id)">PLAY</button>
+                                <div class="buttonsDiv">
+                                <button class="smallPlayButton btn-success" @onclick="() => playSavedGame(game.Id)">PLAY</button>
+                                <button class="smallPlayButton btn-danger" @onclick="() => deleteGame(game.Id)">DELETE</button>
+                                </div>
                             </div>
                         }
                     <div class="box">
@@ -39,7 +43,7 @@
                         <input type="number" @bind-value="@seed" @bind-value:event="oninput">
                         <p>Dificulty</p>
                         <input type="number" @bind-value="@dificulty" @bind-value:event="oninput">
-                        <button class="smallPlayButton" @onclick="newGame">NEW GAME</button>
+                        <button class="smallPlayButton btn-success btn-primary" @onclick="newGame">NEW GAME</button>
                     </div>
                 </div>
             </div>
@@ -96,6 +100,7 @@
     string userId = "";
     List<GameModel> games = null;
     int gameID;
+    public event PropertyChangedEventHandler PropertyChanged;
     public async void newGame()
     {
         using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
@@ -136,7 +141,17 @@
         string s = $"/game/{gameid}";
         NavigationManager.NavigateTo(s, true);
     }
-
+    public async void deleteGame(int gameid)
+    {   
+        using (IDbConnection connection = new SqlConnection(_config.GetConnectionString("Default")))
+                {
+                    string sql = $"DELETE FROM Games WHERE Id = (@id) ";
+                    connection.Open();
+                    connection.Execute(sql, new {  id = gameid });
+                }
+        await LoadGames();
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+    }
     public void showGameSettings()
     {
         showMiddlePlay = "hidden";
@@ -162,13 +177,19 @@
     protected override async Task OnInitializedAsync()
     {
         await getUserId();
+        await LoadGames();       
+        PropertyChanged += (o, e) => StateHasChanged();
+            StateHasChanged();
+    }
+    async Task LoadGames()
+    {
         if (userId != "")
         {
             string sql = "select * from Games where PlayerId = (@user);";
             games = await _data.LoadData<GameModel, dynamic>(sql, new { user = userId }, _config.GetConnectionString("Default"));
         }
-
     }
+
     async Task<string> getUserId()
     {
         var user = (await authStateProvider.GetAuthenticationStateAsync()).User;

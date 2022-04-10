@@ -211,7 +211,7 @@ body {
     font-family: 'Open sans', sans-serif;
 }
 
-.game .buttonsDiv {
+.buttonsDiv {
     text-align: center;
     width: 80%;
     margin: auto;
@@ -361,16 +361,16 @@ body {
     outline: 0 !important;
 }
 .smallPlayButton {
-    width: 8rem;
-    height: 5rem;
-    background-color: #18D95B;
+    width: 6rem;
+    height: 2.5rem;
+   /* background-color: #18D95B;*/
     color: white;
-    font-weight: 800;
+    font-weight: 600;
     font-family: 'Open sans', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: large;
+    font-size: medium;
     border: unset;
     outline: none;
     text-align: center;
@@ -379,11 +379,6 @@ body {
     margin: auto;
 }
 
-.smallPlayButton:hover {
-    border-radius: 8px;
-    background-color: #2eff77;
-    font-size: large;
-}
 .gameMenu {
     width: 30%;
     height: auto;
