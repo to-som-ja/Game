@@ -1,4 +1,4 @@
-﻿using Accord.Math;
+﻿    using Accord.Math;
 using AVXPerlinNoise;
 using Dapper;
 using Game.Models;
@@ -75,11 +75,11 @@ namespace Game.Web.Pages
                 }
                 if (game.PositionX == 0)
                 {
-                    player = new Player(mapWidth / 2, mapHeight / 2, "Images/player.png");
+                    player = new Player(mapWidth / 2, mapHeight / 2, "Images/player-down.png");
                 }
                 else
                 {
-                    player = new Player(game.PositionX, game.PositionY, "Images/player.png");
+                    player = new Player(game.PositionX, game.PositionY, "Images/player-down.png");
                     player.level = game.Level;
                     player.experience = game.Experience;
                 }
@@ -97,7 +97,7 @@ namespace Game.Web.Pages
                 {
                     rnd = new Random(seed);
                 }
-                player = new Player(mapWidth / 2, mapHeight / 2, "Images/player.png");
+                player = new Player(mapWidth / 2, mapHeight / 2, "Images/player-down.png");
             }
             xOffset = rnd.Next(1, 10000) - 10000;
             yOffset = rnd.Next(1, 10000) - 10000;
@@ -220,6 +220,7 @@ namespace Game.Web.Pages
                     case 0:
                         player.direction = Direction.North;
                         player.positionY--;
+                        player.ImagePath = "Images/player-up.png";
                         if (top - 40 < border * 40 + 3)
                         {
                             moveMap = true;
@@ -237,6 +238,7 @@ namespace Game.Web.Pages
                     case 1:
                         player.positionX++;
                         player.direction = Direction.East;
+                        player.ImagePath = "Images/player-right.png";
                         if (left + 40 >= renderWidth * 40 - border * 40)
                         {
                             moveMap = true;
@@ -254,6 +256,7 @@ namespace Game.Web.Pages
                     case 2:
                         player.positionY++;
                         player.direction = Direction.South;
+                        player.ImagePath = "Images/player-down.png";
                         if (top + 40 >= renderHeight * 40 - border * 40)
                         {
                             moveMap = true;
@@ -271,6 +274,7 @@ namespace Game.Web.Pages
                     case 3:
                         player.positionX--;
                         player.direction = Direction.West;
+                        player.ImagePath = "Images/player-left.png";
                         if (left - 40 < border * 40 + 3)
                         {
                             moveMap = true;
